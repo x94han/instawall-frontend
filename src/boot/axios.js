@@ -18,6 +18,7 @@ api.interceptors.request.use(
   },
   function (error) {
     // Do something with request error
+    console.error(error);
     return Promise.reject(error);
   }
 );
@@ -29,15 +30,7 @@ api.interceptors.response.use(
   },
   function (error) {
     if (error.response) {
-      switch (error.response.status) {
-        case 404:
-          console.error("你要找的頁面不存在", error);
-          // go to 404 page
-          break;
-
-        default:
-          console.error(error);
-      }
+      return Promise.reject(error.response.data);
     }
 
     if (!window.navigator.onLine) {
@@ -50,6 +43,7 @@ api.interceptors.response.use(
       return;
     }
 
+    console.error(error);
     return Promise.reject(error);
   }
 );

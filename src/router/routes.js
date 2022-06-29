@@ -2,7 +2,19 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/HomePage.vue") }],
+    children: [
+      {
+        path: "",
+        name: "HomePage",
+        component: () => import("pages/HomePage.vue"),
+        meta: { auth: true },
+      },
+      {
+        path: "login",
+        name: "LoginPage",
+        component: () => import("pages/LoginPage.vue"),
+      },
+    ],
   },
 
   // Always leave this as last one,
