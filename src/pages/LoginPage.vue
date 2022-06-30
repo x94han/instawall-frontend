@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md card-wrap">
-    <div>
+    <div v-if="!authStore.validToken">
       <q-card flat bordered class="text-center q-mb-md">
         <q-card-section>
           <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
@@ -82,30 +82,77 @@
         </q-card-section>
       </q-card>
     </div>
+
+    <div v-if="authStore.validToken && !loadinglogin">
+      <q-card flat bordered class="text-center q-mb-md">
+        <q-card-section>
+          <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
+          <q-avatar size="100px">
+            <img
+              :src="
+                authStore.user.avatar
+                  ? authStore.user.avatar
+                  : 'src/assets/images/default-avatar.jpg'
+              "
+            />
+          </q-avatar>
+        </q-card-section>
+
+        <q-card-section>
+          <q-btn
+            :label="`使用 ${authStore.user.screenName} 的身分繼續`"
+            type="submit"
+            color="primary"
+            to="/"
+          />
+          <q-card-section class="row justify-center">
+            <div class="self-center">
+              不是 {{ authStore.user.screenName }}？
+            </div>
+            <q-btn
+              flat
+              color="primary"
+              label="切換帳號"
+              @click="switchAccounts"
+            />
+          </q-card-section>
+        </q-card-section>
+      </q-card>
+    </div>
   </q-page>
 </template>
 
 <script setup>
 import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
 import { useGlobalStore } from "src/stores/globalStore";
-import { apiLogin } from "src/apis";
+import { useAuthStore } from "src/stores/authStore";
 import notifyApiError from "src/utility/notifyApiError";
 
+const router = useRouter();
 const globalStore = useGlobalStore();
+const authStore = useAuthStore();
 
+/**
+ *  一般登入
+ */
 const loginObj = reactive({
   email: "",
   password: "",
 });
 
+const reserLoginObj = () => {
+  loginObj.email = "";
+  loginObj.password = "";
+};
+
 const loadinglogin = ref(false);
-const loadingFBlogin = ref(false);
 
 const onSubmitLogin = async (evt) => {
   loadinglogin.value = true;
   try {
-    const res = await apiLogin(loginObj);
-    console.log("res :>> ", res);
+    await authStore.login(loginObj);
+    router.push({ name: "HomePage" });
   } catch (error) {
     notifyApiError(error);
   } finally {
@@ -113,7 +160,11 @@ const onSubmitLogin = async (evt) => {
   }
 };
 
-// TODO 第三方登入功能
+/**
+ *  第三方登入 // TODO
+ */
+const loadingFBlogin = ref(false);
+
 const onSubmitFBLogin = async (evt) => {
   loadingFBlogin.value = true;
   try {
@@ -129,7 +180,9 @@ const onSubmitFBLogin = async (evt) => {
   }
 };
 
-// TODO 忘記密碼功能
+/**
+ *  忘記密碼  //TODO
+ */
 const onForgetPassword = async (evt) => {
   try {
     globalStore.$q.notify({
@@ -141,6 +194,14 @@ const onForgetPassword = async (evt) => {
     notifyApiError(error);
   } finally {
   }
+};
+
+/**
+ *  切換帳號
+ *  authStore.validToken = true 卡片才會顯示
+ */
+const switchAccounts = () => {
+  authStore.logout(loginObj);
 };
 </script>
 
