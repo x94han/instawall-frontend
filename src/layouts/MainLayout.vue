@@ -10,9 +10,7 @@
           <q-btn to="/login" flat round icon="eva-search-outline" />
           <q-btn to="/posts" flat round icon="eva-plus-square-outline" />
           <q-btn flat round>
-            <q-avatar size="25px">
-              <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
-            </q-avatar>
+            <BaseAvatar size="25px" />
           </q-btn>
           <q-btn flat round icon="eva-menu-outline">
             <q-menu transition-show="jump-down" transition-hide="jump-up">
@@ -57,9 +55,7 @@
         <q-route-tab to="/login" icon="eva-search-outline" />
         <q-route-tab to="/posts" icon="eva-plus-square-outline" />
         <q-route-tab to="/">
-          <q-avatar size="25px">
-            <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
-          </q-avatar>
+          <BaseAvatar size="25px" />
         </q-route-tab>
       </q-tabs>
     </q-footer>
@@ -70,7 +66,9 @@
   </q-layout>
 </template>
 
-<script setup></script>
+<script setup>
+import BaseAvatar from "src/components/BaseAvatar.vue";
+</script>
 
 <style lang="scss">
 .q-toolbar__title {

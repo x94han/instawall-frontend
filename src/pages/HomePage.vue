@@ -13,9 +13,7 @@
       <div class="col-4 lg-screen-only">
         <q-item class="fixed">
           <q-item-section avatar>
-            <q-avatar>
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
+            <BaseAvatar />
           </q-item-section>
 
           <q-item-section>
@@ -28,8 +26,9 @@
 </template>
 
 <script setup>
-import PostCard from "src/components/PostCard.vue";
 import { ref } from "vue";
+import BaseAvatar from "src/components/BaseAvatar.vue";
+import PostCard from "src/components/PostCard.vue";
 import { apiGetPosts } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 

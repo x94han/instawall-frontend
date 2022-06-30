@@ -2,15 +2,7 @@
   <q-card class="card-post q-mb-md" flat bordered>
     <q-item>
       <q-item-section avatar class="col-auto">
-        <q-avatar size="md">
-          <img
-            :src="
-              props.data.user.avatar
-                ? props.data.user.avatar
-                : 'https://cdn.quasar.dev/img/boy-avatar.png'
-            "
-          />
-        </q-avatar>
+        <BaseAvatar size="md" :src="props.data.user.avatar" />
       </q-item-section>
 
       <q-item-section>
@@ -71,6 +63,7 @@
 
 <script setup>
 import { date } from "quasar";
+import BaseAvatar from "src/components/BaseAvatar.vue";
 
 const props = defineProps({
   data: {

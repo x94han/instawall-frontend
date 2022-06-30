@@ -87,15 +87,7 @@
       <q-card flat bordered class="text-center q-mb-md">
         <q-card-section>
           <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
-          <q-avatar size="100px">
-            <img
-              :src="
-                authStore.user.avatar
-                  ? authStore.user.avatar
-                  : 'src/assets/images/default-avatar.jpg'
-              "
-            />
-          </q-avatar>
+          <BaseAvatar size="100px" :src="authStore.user.avatar" />
         </q-card-section>
 
         <q-card-section>
@@ -125,6 +117,7 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
+import BaseAvatar from "src/components/BaseAvatar.vue";
 import { useGlobalStore } from "src/stores/globalStore";
 import { useAuthStore } from "src/stores/authStore";
 import notifyApiError from "src/utility/notifyApiError";
