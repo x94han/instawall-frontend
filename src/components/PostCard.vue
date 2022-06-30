@@ -1,5 +1,5 @@
 <template>
-  <q-card class="card-post q-mb-md" flat bordered>
+  <q-card class="q-mb-md" flat bordered>
     <q-item>
       <q-item-section avatar class="col-auto">
         <BaseAvatar size="md" :src="props.data.user.avatar" />

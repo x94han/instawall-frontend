@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md card-wrap">
-    <div v-if="!authStore.validToken">
+    <template v-if="!authStore.validToken">
       <q-card flat bordered class="text-center q-mb-md">
         <q-card-section>
           <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
@@ -81,9 +81,9 @@
           <q-btn flat color="primary" label="註冊" to="/signUp" />
         </q-card-section>
       </q-card>
-    </div>
+    </template>
 
-    <div v-if="authStore.validToken && !loadinglogin">
+    <template v-if="authStore.validToken && !loadinglogin">
       <q-card flat bordered class="text-center q-mb-md">
         <q-card-section>
           <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
@@ -110,7 +110,7 @@
           </q-card-section>
         </q-card-section>
       </q-card>
-    </div>
+    </template>
   </q-page>
 </template>
 
