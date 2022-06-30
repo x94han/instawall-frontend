@@ -10,7 +10,7 @@
           <q-btn to="/login" flat round icon="eva-search-outline" />
           <q-btn to="/posts" flat round icon="eva-plus-square-outline" />
           <q-btn flat round>
-            <BaseAvatar size="25px" />
+            <BaseAvatar size="25px" :src="authStore.user?.avatar" />
           </q-btn>
           <q-btn flat round icon="eva-menu-outline">
             <q-menu transition-show="jump-down" transition-hide="jump-up">
@@ -68,6 +68,9 @@
 
 <script setup>
 import BaseAvatar from "src/components/BaseAvatar.vue";
+import { useAuthStore } from "src/stores/authStore";
+
+const authStore = useAuthStore();
 </script>
 
 <style lang="scss">
