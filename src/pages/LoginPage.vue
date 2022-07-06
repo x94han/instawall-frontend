@@ -15,10 +15,7 @@
               outlined
               dense
               lazy-rules
-              :rules="[
-                (val) =>
-                  globalStore.$validator.isEmail(val) || '請輸入正確格式',
-              ]"
+              :rules="[(val) => validEmail(val) || '請輸入正確格式']"
               placeholder="電子郵件地址"
             />
             <q-input
@@ -30,9 +27,7 @@
               lazy-rules
               :rules="[
                 (val) =>
-                  (val.length >= 8 &&
-                    !globalStore.$validator.isNumeric(val) &&
-                    !globalStore.$validator.isAlpha(val)) ||
+                  validPassword(val) ||
                   '密碼長度需大於八碼且數字與英文或符號混合',
               ]"
               placeholder="密碼"
@@ -118,12 +113,11 @@
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import BaseAvatar from "src/components/BaseAvatar.vue";
-import { useGlobalStore } from "src/stores/globalStore";
 import { useAuthStore } from "src/stores/authStore";
+import { validEmail, validPassword } from "src/utility/validator";
 import notifyApiError from "src/utility/notifyApiError";
 
 const router = useRouter();
-const globalStore = useGlobalStore();
 const authStore = useAuthStore();
 
 /**
@@ -194,7 +188,7 @@ const onForgetPassword = async (evt) => {
  *  authStore.validToken = true 卡片才會顯示
  */
 const switchAccounts = () => {
-  authStore.logout(loginObj);
+  authStore.logout();
 };
 </script>
 
