@@ -1,8 +1,7 @@
 import { defineStore } from "pinia";
-import { useQuasar, date } from "quasar";
+import { Cookies } from "quasar";
 import { apiLogin } from "src/apis";
 
-const $q = useQuasar();
 const cookieOptions = {
   expires: "1d",
   httpOnly: true,
@@ -10,12 +9,12 @@ const cookieOptions = {
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: $q.cookies.get("iwAccessToken"),
-    user: JSON.parse($q.cookies.get("iwUser")),
+    token: Cookies.get("iwAccessToken"),
+    user: JSON.parse(Cookies.get("iwUser")),
   }),
   getters: {
     validToken() {
-      return $q.cookies.has("iwAccessToken");
+      return Cookies.has("iwAccessToken");
     },
   },
   actions: {
@@ -33,12 +32,12 @@ export const useAuthStore = defineStore("auth", {
       this.token = res.data.token;
       this.user = { _id, screenName, avatar };
 
-      $q.cookies.set("iwAccessToken", this.token, cookieOptions);
-      $q.cookies.set("iwUser", JSON.stringify(this.user), cookieOptions);
+      Cookies.set("iwAccessToken", this.token, cookieOptions);
+      Cookies.set("iwUser", JSON.stringify(this.user), cookieOptions);
     },
     logout() {
-      $q.cookies.remove("iwAccessToken");
-      $q.cookies.remove("iwUser");
+      Cookies.remove("iwAccessToken");
+      Cookies.remove("iwUser");
       this.$reset();
     },
   },
