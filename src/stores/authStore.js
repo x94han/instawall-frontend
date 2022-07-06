@@ -1,38 +1,44 @@
 import { defineStore } from "pinia";
+import { useQuasar, date } from "quasar";
 import { apiLogin } from "src/apis";
+
+const $q = useQuasar();
+const cookieOptions = {
+  expires: "1d",
+  httpOnly: true,
+};
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem("iwAccessToken"),
-    user: JSON.parse(localStorage.getItem("iwUser")),
-    tokenEexpiredAt: localStorage.getItem("iwAccessTokenEexpiredAt"),
+    token: $q.cookies.get("iwAccessToken"),
+    user: JSON.parse($q.cookies.get("iwUser")),
   }),
   getters: {
     validToken() {
-      const expiredAt = new Date(this.tokenEexpiredAt * 1);
-      return this.token !== null && expiredAt > new Date();
+      return $q.cookies.has("iwAccessToken");
     },
   },
   actions: {
     async login(param) {
       const res = await apiLogin(param);
-      const { _id, screenName, avatar } = res.data;
+      this.saveLoginData(res);
+    },
+    async signup(param) {
+      const res = await apiSignup(param);
+      this.saveLoginData(res);
+    },
+    saveLoginData(res) {
+      const { _id, screenName, avatar } = res.data.user;
 
-      this.token = res.token;
+      this.token = res.data.token;
       this.user = { _id, screenName, avatar };
 
-      const now = new Date();
-      const tomorrow = now.setDate(now.getDate() + 1);
-      this.tokenEexpiredAt = tomorrow;
-
-      localStorage.setItem("iwAccessToken", this.token);
-      localStorage.setItem("iwUser", JSON.stringify(this.user));
-      localStorage.setItem("iwAccessTokenEexpiredAt", tomorrow);
+      $q.cookies.set("iwAccessToken", this.token, cookieOptions);
+      $q.cookies.set("iwUser", JSON.stringify(this.user), cookieOptions);
     },
     logout() {
-      localStorage.removeItem("iwAccessToken");
-      localStorage.removeItem("iwUser");
-      localStorage.removeItem("iwAccessTokenEexpiredAt");
+      $q.cookies.remove("iwAccessToken");
+      $q.cookies.remove("iwUser");
       this.$reset();
     },
   },
