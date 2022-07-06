@@ -82,19 +82,19 @@
       <q-card flat bordered class="text-center q-mb-md">
         <q-card-section>
           <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
-          <BaseAvatar size="100px" :src="authStore.user.avatar" />
+          <BaseAvatar size="100px" :src="authStore.user?.avatar" />
         </q-card-section>
 
         <q-card-section>
           <q-btn
-            :label="`使用 ${authStore.user.screenName} 的身分繼續`"
+            :label="`使用 ${authStore.user?.screenName} 的身分繼續`"
             type="submit"
             color="primary"
             to="/"
           />
           <q-card-section class="row justify-center">
             <div class="self-center">
-              不是 {{ authStore.user.screenName }}？
+              不是 {{ authStore.user?.screenName }}？
             </div>
             <q-btn
               flat
