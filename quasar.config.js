@@ -10,7 +10,7 @@
 
 const { configure } = require("quasar/wrappers");
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     eslint: {
       // fix: true,
@@ -63,7 +63,11 @@ module.exports = configure(function (/* ctx */) {
       publicPath:
         process.env.NODE_ENV === "development" ? "/" : "/instawall-frontend/",
       // analyze: true,
-      // env: {},
+      env: {
+        API: ctx.dev
+          ? "http://localhost:3000/api/v1"
+          : "https://instawall-demo.herokuapp.com/api/v1",
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

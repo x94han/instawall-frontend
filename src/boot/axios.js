@@ -8,8 +8,7 @@ import { Notify } from "quasar";
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const baseURL = "http://localhost:3000/api/v1";
-const api = axios.create({ baseURL });
+const api = axios.create({ baseURL: process.env.API });
 
 api.interceptors.request.use(
   function (config) {
