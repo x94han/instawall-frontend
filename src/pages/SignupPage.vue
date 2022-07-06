@@ -3,10 +3,10 @@
     <q-card flat bordered class="text-center q-mb-md">
       <q-card-section class="column">
         <h1 class="text-h3 text-grand-hotel q-my-lg">Instawall</h1>
-        <h2 class="col text-h6 text-grey text-bold">
+        <!-- <h2 class="col text-h6 text-grey text-bold">
           註冊即可查看朋友的照片和貼文。
         </h2>
-        <!-- <q-btn
+        <q-btn
           color="primary"
           icon="eva-facebook-outline"
           label="使用 Facebook 帳號登入"
@@ -70,6 +70,13 @@
 
           <q-btn label="註冊" type="submit" color="primary" />
         </q-form>
+      </q-card-section>
+    </q-card>
+
+    <q-card flat bordered class="text-center">
+      <q-card-section class="row justify-center">
+        <div class="self-center">已經有帳號嗎？</div>
+        <q-btn flat color="primary" label="登入" to="/login" />
       </q-card-section>
     </q-card>
   </q-page>
