@@ -112,11 +112,13 @@
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
-import BaseAvatar from "src/components/BaseAvatar.vue";
+import { useQuasar } from "quasar";
 import { useAuthStore } from "src/stores/authStore";
 import { validEmail, validPassword } from "src/utility/validator";
 import notifyApiError from "src/utility/notifyApiError";
+import BaseAvatar from "src/components/BaseAvatar.vue";
 
+const $q = useQuasar();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -127,11 +129,6 @@ const loginObj = reactive({
   email: "",
   password: "",
 });
-
-const reserLoginObj = () => {
-  loginObj.email = "";
-  loginObj.password = "";
-};
 
 const loadinglogin = ref(false);
 
@@ -155,7 +152,7 @@ const loadingFBlogin = ref(false);
 const onSubmitFBLogin = async (evt) => {
   loadingFBlogin.value = true;
   try {
-    globalStore.$q.notify({
+    $q.notify({
       color: "brown",
       position: "top",
       message: "功能待開放",
@@ -172,7 +169,7 @@ const onSubmitFBLogin = async (evt) => {
  */
 const onForgetPassword = async (evt) => {
   try {
-    globalStore.$q.notify({
+    $q.notify({
       color: "brown",
       position: "top",
       message: "功能待開放",
