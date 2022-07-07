@@ -1,6 +1,6 @@
 import { boot } from "quasar/wrappers";
 import axios from "axios";
-import { Notify } from "quasar";
+import { Notify, Cookies } from "quasar";
 
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
@@ -12,7 +12,11 @@ const api = axios.create({ baseURL: process.env.API });
 
 api.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
+    if (Cookies.has("iwAccessToken")) {
+      config.headers["Authorization"] = `Bearer ${Cookies.get(
+        "iwAccessToken"
+      )}`;
+    }
     return config;
   },
   function (error) {

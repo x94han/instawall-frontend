@@ -1,20 +1,21 @@
 import { defineStore } from "pinia";
 import { Cookies } from "quasar";
+import { api } from "boot/axios";
 import { apiLogin } from "src/apis";
 
 const cookieOptions = {
   expires: "1d",
-  httpOnly: true,
+  // httpOnly: true,
 };
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     token: Cookies.get("iwAccessToken"),
-    user: JSON.parse(Cookies.get("iwUser")),
+    user: Cookies.get("iwUser"),
   }),
   getters: {
     validToken() {
-      return Cookies.has("iwAccessToken");
+      return this.token ? true : false;
     },
   },
   actions: {
@@ -36,9 +37,9 @@ export const useAuthStore = defineStore("auth", {
       Cookies.set("iwUser", JSON.stringify(this.user), cookieOptions);
     },
     logout() {
+      this.$reset();
       Cookies.remove("iwAccessToken");
       Cookies.remove("iwUser");
-      this.$reset();
     },
   },
 });
