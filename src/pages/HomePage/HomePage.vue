@@ -1,10 +1,10 @@
 <template>
   <q-page>
     <div class="constrain row justify-center q-py-md">
-      <div class="col-auto">
-        <ul class="list-unstyled constrain-cards">
+      <div class="col">
+        <ul class="list-unstyled q-ml-auto" style="max-width: 470px">
           <li v-if="posts.length === 0" class="text-center">
-            <SkeletonCard v-if="loading" />
+            <SkeletonCard v-if="loading" class="full-width" />
             <q-card v-else flat bordered>
               <q-card-section class="text-center">
                 發布第一則貼文吧！
@@ -13,7 +13,7 @@
           </li>
 
           <li v-for="post in posts" :key="post._id">
-            <PostCard :data="post" />
+            <PostCard :post="post" />
           </li>
         </ul>
       </div>
@@ -32,23 +32,28 @@
         </q-item>
       </div>
     </div>
+
+    <CommentDialog />
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, reactive, provide, readonly } from "vue";
 import { useAuthStore } from "src/stores/authStore";
-import { apiGetPosts } from "src/apis";
+import { apiGetPosts, apiAddComment } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 import BaseAvatar from "src/components/BaseAvatar.vue";
 import SkeletonCard from "src/components/SkeletonCard.vue";
-import PostCard from "src/components/PostCard.vue";
+import PostCard from "src/pages/HomePage/PostCard.vue";
+import CommentDialog from "src/pages/HomePage/CommentDialog.vue";
 
 const authStore = useAuthStore();
 
+/**
+ * Get posts
+ */
 const posts = ref([]);
 const loading = ref(false);
-
 const getData = async () => {
   loading.value = true;
   try {
@@ -62,10 +67,20 @@ const getData = async () => {
 };
 
 getData();
+
+/**
+ * Leave comment & Update post for posts
+ */
+const dialog = reactive({
+  post: {},
+  updateComments: (newComment) => {
+    const foundPost = posts.value.find((post) => post._id === newComment.post);
+    foundPost.comments.push(newComment);
+    dialogPost.value = foundPost;
+  },
+  handler: false,
+});
+provide("dialog", dialog);
 </script>
 
-<style lang="scss" scoped>
-.constrain-cards {
-  max-width: 470px;
-}
-</style>
+<style lang="scss" scoped></style>
