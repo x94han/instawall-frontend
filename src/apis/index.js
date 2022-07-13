@@ -9,3 +9,4 @@ export const apiGetPosts = (data) => api.get(`${POST_URL}`, data);
 export const apiGetPost = (id, data) => api.get(`${POST_URL}/${id}`, data);
 export const apiAddComment = (id, data) =>
   api.post(`${POST_URL}/${id}/comment`, data);
+export const apiDeleteComment = (id) => api.delete(`${POST_URL}/comment/${id}`);

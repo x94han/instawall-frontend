@@ -40,7 +40,7 @@
 <script setup>
 import { ref, reactive, provide, readonly } from "vue";
 import { useAuthStore } from "src/stores/authStore";
-import { apiGetPosts, apiAddComment } from "src/apis";
+import { apiGetPosts, apiAddComment, apiDeleteComment } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 import BaseAvatar from "src/components/BaseAvatar.vue";
 import SkeletonCard from "src/components/SkeletonCard.vue";
@@ -75,12 +75,32 @@ const dialog = reactive({
   post: {},
   updateComments: (newComment) => {
     const foundPost = posts.value.find((post) => post._id === newComment.post);
-    foundPost.comments.push(newComment);
-    dialogPost.value = foundPost;
+    foundPost && foundPost.comments.push(newComment);
+    dialog.post = foundPost;
   },
   handler: false,
 });
 provide("dialog", dialog);
+
+/**
+ * Delete comment & Update post for posts
+ */
+const deleteComment = async (postId, commentId) => {
+  try {
+    console.log("postId :>> ", postId);
+    console.log("commentId :>> ", commentId);
+    await apiDeleteComment(commentId);
+    const foundPost = posts.value.find((post) => post._id === postId);
+    const idx = foundPost.comments.findIndex(
+      (comment) => comment._id === commentId
+    );
+    foundPost.comments.splice(idx, 1);
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+  }
+};
+provide("deleteComment", deleteComment);
 </script>
 
 <style lang="scss" scoped></style>

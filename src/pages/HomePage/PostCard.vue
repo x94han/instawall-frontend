@@ -36,7 +36,11 @@
         {{ props.post.content }}
       </div>
 
-      <div v-if="props.post.comments.length > 0">
+      <div
+        v-if="props.post.comments.length > 0"
+        @click="toLeaveComment"
+        class="q-mb-sm"
+      >
         <a class="cursor-pointer text-body2 text-grey">
           查看全部 {{ props.post.comments.length }} 則留言</a
         >
@@ -45,14 +49,20 @@
         <li
           v-for="comment in commentsByMe"
           :key="comment._id"
-          class="flex justify-between"
+          class="flex justify-between q-mb-sm"
         >
           <p class="q-mb-none col self-center">
             <span class="text-bold q-mr-sm">{{ comment.user.screenName }}</span>
             <span>{{ comment.content }}</span>
           </p>
-          <div class="col-auto">
-            <q-btn flat round padding="xs" icon="eva-trash-2-outline" />
+          <div class="col-auto self-center">
+            <q-btn
+              @click="toDeleteComment(comment._id)"
+              flat
+              round
+              size="xs"
+              icon="eva-trash-2-outline"
+            />
           </div>
         </li>
       </ul>
@@ -73,6 +83,7 @@ import BaseAvatar from "src/components/BaseAvatar.vue";
 const authStore = useAuthStore();
 
 const dialog = inject("dialog");
+const deleteComment = inject("deleteComment");
 const props = defineProps({
   post: {
     type: Object,
@@ -96,5 +107,11 @@ const formatData = (timeStamp) =>
 const toLeaveComment = () => {
   dialog.post = props.post;
   dialog.handler = true;
+};
+
+// 刪除留言
+const toDeleteComment = (commentId) => {
+  dialog.post = props.post;
+  deleteComment(props.post._id, commentId);
 };
 </script>
