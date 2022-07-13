@@ -72,7 +72,13 @@
 
         <q-card-actions>
           <q-btn flat round fab-mini icon="eva-heart-outline" />
+          <div v-if="dialog.post.likes.length > 0" class="text-bold q-ml-sm">
+            <a class="cursor-pointer"> {{ dialog.post.likes.length }} 個讚</a>
+          </div>
         </q-card-actions>
+        <q-card-section class="q-pt-none text-caption text-grey">
+          {{ formatData(dialog.post.createdAt) }}
+        </q-card-section>
 
         <div v-if="dialog.post?.likes?.length > 0" class="text-bold q-mb-xs">
           <a class="cursor-pointer"> {{ dialog.post.likes.length }} 個讚</a>
