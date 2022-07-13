@@ -53,10 +53,10 @@
                   class="col-auto self-center"
                 >
                   <q-btn
-                    @click="deleteComment(dialog.post._id, comment._id)"
+                    @click="toDeleteComment(comment)"
                     flat
                     round
-                    padding="xs"
+                    size="sm"
                     icon="eva-trash-2-outline"
                   />
                 </div>
@@ -123,7 +123,7 @@ import BaseAvatar from "src/components/BaseAvatar.vue";
 const authStore = useAuthStore();
 
 const dialog = inject("dialog");
-const deleteComment = inject("deleteComment");
+const alert = inject("alert");
 
 const formatData = (timeStamp) =>
   date.formatDate(new Date(timeStamp), "YYYY年M月D日");
@@ -144,5 +144,13 @@ const leaveComment = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+/**
+ * Open CommentDeleteAlert
+ */
+const toDeleteComment = (comment) => {
+  alert.comment = comment;
+  alert.handler = true;
 };
 </script>

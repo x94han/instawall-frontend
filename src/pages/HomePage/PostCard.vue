@@ -57,7 +57,7 @@
           </p>
           <div class="col-auto self-center">
             <q-btn
-              @click="toDeleteComment(comment._id)"
+              @click="toDeleteComment(comment)"
               flat
               round
               size="xs"
@@ -83,7 +83,7 @@ import BaseAvatar from "src/components/BaseAvatar.vue";
 const authStore = useAuthStore();
 
 const dialog = inject("dialog");
-const deleteComment = inject("deleteComment");
+const alert = inject("alert");
 const props = defineProps({
   post: {
     type: Object,
@@ -91,7 +91,6 @@ const props = defineProps({
   },
 });
 
-// 過濾出登入者的留言
 const commentsByMe = computed(() => {
   if (!props.post.comments) return [];
 
@@ -103,15 +102,19 @@ const commentsByMe = computed(() => {
 const formatData = (timeStamp) =>
   date.formatDate(new Date(timeStamp), "YYYY年M月D日");
 
-// 打開留言燈箱
+/**
+ * Open CommentDialog
+ */
 const toLeaveComment = () => {
   dialog.post = props.post;
   dialog.handler = true;
 };
 
-// 刪除留言
-const toDeleteComment = (commentId) => {
-  dialog.post = props.post;
-  deleteComment(props.post._id, commentId);
+/**
+ * Open CommentDeleteAlert
+ */
+const toDeleteComment = (comment) => {
+  alert.comment = comment;
+  alert.handler = true;
 };
 </script>

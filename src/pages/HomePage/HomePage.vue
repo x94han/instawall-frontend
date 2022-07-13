@@ -34,6 +34,7 @@
     </div>
 
     <CommentDialog />
+    <CommentDeleteAlert />
   </q-page>
 </template>
 
@@ -46,6 +47,7 @@ import BaseAvatar from "src/components/BaseAvatar.vue";
 import SkeletonCard from "src/components/SkeletonCard.vue";
 import PostCard from "src/pages/HomePage/PostCard.vue";
 import CommentDialog from "src/pages/HomePage/CommentDialog.vue";
+import CommentDeleteAlert from "src/pages/HomePage/CommentDeleteAlert.vue";
 
 const authStore = useAuthStore();
 
@@ -85,22 +87,23 @@ provide("dialog", dialog);
 /**
  * Delete comment & Update post for posts
  */
-const deleteComment = async (postId, commentId) => {
-  try {
-    console.log("postId :>> ", postId);
-    console.log("commentId :>> ", commentId);
-    await apiDeleteComment(commentId);
-    const foundPost = posts.value.find((post) => post._id === postId);
-    const idx = foundPost.comments.findIndex(
-      (comment) => comment._id === commentId
-    );
-    foundPost.comments.splice(idx, 1);
-  } catch (error) {
-    notifyApiError(error);
-  } finally {
-  }
-};
-provide("deleteComment", deleteComment);
+const alert = reactive({
+  comment: {},
+  deleteComment: async (postId, commentId) => {
+    try {
+      await apiDeleteComment(commentId);
+      const foundPost = posts.value.find((post) => post._id === postId);
+      const idx = foundPost.comments.findIndex(
+        (comment) => comment._id === commentId
+      );
+      foundPost.comments.splice(idx, 1);
+    } catch (error) {
+      notifyApiError(error);
+    }
+  },
+  handler: false,
+});
+provide("alert", alert);
 </script>
 
 <style lang="scss" scoped></style>
