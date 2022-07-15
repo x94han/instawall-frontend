@@ -11,7 +11,36 @@
           <q-btn to="/posts" flat round icon="eva-plus-square-outline" />
           <q-btn flat round>
             <BaseAvatar size="25px" :src="authStore.user?.avatar" />
+            <q-menu transition-show="jump-down" transition-hide="jump-up">
+              <q-list style="min-width: 130px">
+                <q-item clickable>
+                  <div class="flex items-center q-mr-md">
+                    <q-icon size="20px" name="eva-person" />
+                  </div>
+                  <q-item-section>個人資料</q-item-section>
+                </q-item>
+                <q-item clickable>
+                  <div class="flex items-center q-mr-md">
+                    <q-icon size="20px" name="eva-people" />
+                  </div>
+                  <q-item-section>追蹤列表</q-item-section>
+                </q-item>
+                <q-item clickable>
+                  <div class="flex items-center q-mr-md">
+                    <q-icon size="20px" name="eva-heart" />
+                  </div>
+                  <q-item-section>按讚列表</q-item-section>
+                </q-item>
+                <q-separator></q-separator>
+                <q-item clickable>
+                  <q-item-section>登出</q-item-section>
+                </q-item>
+                <q-separator />
+              </q-list>
+            </q-menu>
           </q-btn>
+        </div>
+        <div class="sm-screen-only">
           <q-btn flat round icon="eva-menu-outline">
             <q-menu transition-show="jump-down" transition-hide="jump-up">
               <q-list style="min-width: 130px">
@@ -52,10 +81,15 @@
         class="text-grey-10"
       >
         <q-route-tab to="/" icon="eva-home-outline" />
-        <q-route-tab to="/login" icon="eva-search-outline" />
+        <!-- <q-route-tab to="/login" icon="eva-search-outline" /> -->
         <q-route-tab to="/posts" icon="eva-plus-square-outline" />
-        <q-route-tab to="/">
-          <BaseAvatar size="25px" />
+        <q-route-tab
+          :to="{
+            name: PersonalPage,
+            params: { userId: authStore.user?._id },
+          }"
+        >
+          <BaseAvatar size="25px" :src="authStore.user?.avatar" />
         </q-route-tab>
       </q-tabs>
     </q-footer>

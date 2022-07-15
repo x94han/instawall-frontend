@@ -4,6 +4,12 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
+        path: "/:userId",
+        name: "PersonalPage",
+        component: () => import("pages/PersonalPage/PersonalPage.vue"),
+        meta: { auth: true },
+      },
+      {
         path: "/",
         name: "HomePage",
         component: () => import("pages/HomePage/HomePage.vue"),

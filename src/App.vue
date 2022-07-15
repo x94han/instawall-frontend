@@ -3,9 +3,12 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, provide } from "vue";
 
 export default defineComponent({
-  name: 'App'
-})
+  name: "App",
+  setup() {
+    provide("defaultAvatar", "src/assets/images/default-avatar.jpg");
+  },
+});
 </script>
