@@ -15,19 +15,18 @@ const routes = [
         component: () => import("pages/HomePage/HomePage.vue"),
         meta: { auth: true },
       },
-      {
-        path: "login",
-        name: "LoginPage",
-        component: () => import("pages/LoginPage.vue"),
-      },
-      {
-        path: "signup",
-        name: "SignupPage",
-        component: () => import("pages/SignupPage.vue"),
-      },
     ],
   },
-
+  {
+    path: "/login",
+    name: "LoginPage",
+    component: () => import("pages/LoginPage.vue"),
+  },
+  {
+    path: "/signup",
+    name: "SignupPage",
+    component: () => import("pages/SignupPage.vue"),
+  },
   // Always leave this as last one,
   // but you can also remove it
   {
