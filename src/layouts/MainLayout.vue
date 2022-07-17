@@ -85,7 +85,7 @@
         <q-route-tab to="/posts" icon="eva-plus-square-outline" />
         <q-route-tab
           :to="{
-            name: PersonalPage,
+            name: 'PersonalPage',
             params: { userId: authStore.user?._id },
           }"
         >
