@@ -1,88 +1,13 @@
 <template>
   <q-page>
     <div class="constrain justify-center q-py-lg">
-      <section class="row q-mb-xl q-px-md">
-        <div class="col-4 text-center">
-          <q-avatar size="150px">
-            <img :src="profile.user?.avatar ?? defaultAvatar" />
-          </q-avatar>
-        </div>
-
-        <div class="col">
-          <div class="row">
-            <h2 class="text-h4 q-my-none q-mr-md ellipsis">
-              {{ profile.user?.screenName }}
-            </h2>
-            <div class="self-center">
-              <q-btn label="編輯個人檔案" outline class="text-bold" />
-            </div>
-          </div>
-
-          <ul class="gt-xs list-unstyled row">
-            <li class="col-auto q-mr-xl text-subtitle1">
-              <a class="cursor-pointer"
-                ><span class="text-bold">{{
-                  tenThousandths(profile.postsCount)
-                }}</span>
-                貼文
-              </a>
-            </li>
-            <li class="col-auto q-mr-xl text-subtitle1">
-              <a class="cursor-pointer"
-                ><span class="text-bold">{{
-                  tenThousandths(profile.fansCount)
-                }}</span>
-                位粉絲
-              </a>
-            </li>
-            <li class="col-auto text-subtitle1">
-              <a class="cursor-pointer">
-                <span class="text-bold">
-                  {{ tenThousandths(profile.followingsCount) }}
-                </span>
-                追蹤中
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="lt-sm">
-        <q-separator />
-
-        <ul class="list-unstyled row text-center">
-          <li class="col text-subtitle2">
-            <a class="cursor-pointer"
-              ><span class="text-bold">{{
-                tenThousandths(profile.postsCount)
-              }}</span>
-              <span class="block text-grey"> 貼文 </span>
-            </a>
-          </li>
-          <li class="col text-subtitle2">
-            <a class="cursor-pointer"
-              ><span class="text-bold">{{
-                tenThousandths(profile.fansCount)
-              }}</span>
-              <span class="block text-grey"> 位粉絲 </span>
-            </a>
-          </li>
-          <li class="col text-subtitle2">
-            <a class="cursor-pointer">
-              <span class="text-bold">
-                {{ tenThousandths(profile.followingsCount) }}
-              </span>
-              <span class="block text-grey"> 追蹤中 </span>
-            </a>
-          </li>
-        </ul>
-      </section>
-
-      <q-separator />
+      <ProfileSection />
 
       <section>
+        <q-separator />
         <q-tabs
           v-model="tab"
+          @update:model-value="renewPosts"
           switch-indicator
           inline-label
           class="text-grey"
@@ -91,135 +16,110 @@
           narrow-indicator
         >
           <q-tab name="posts" label="貼文" icon="eva-grid-outline" />
-          <q-tab name="likes" label="按讚貼文" icon="eva-heart-outline" />
+          <q-tab
+            v-if="isLoginUserPage"
+            name="likes"
+            label="按讚貼文"
+            icon="eva-heart-outline"
+          />
         </q-tabs>
 
-        <q-tab-panels v-model="tab" animated class="bg-grey-1">
-          <q-tab-panel name="posts">
-            <div class="row q-col-gutter-sm">
-              <a
-                v-for="post in posts"
-                :key="post._id"
-                class="col-4 cursor-pointer"
-              >
-                <q-img @click="clickImage" :src="post.image" ratio="1">
-                  <div
-                    class="mask absolute-full text-subtitle2 flex flex-center"
-                  >
-                    <ul
-                      class="mask__content list-unstyled flex flex-center wrap"
-                    >
-                      <li class="q-mr-md">
-                        <q-icon size="sm" name="eva-heart" />
-                        {{ tenThousandths(post.likes.length) }}
-                      </li>
-                      <li>
-                        <q-icon size="sm" name="eva-message-circle" />
-                        {{ tenThousandths(post.comments.length) }}
-                      </li>
-                    </ul>
-                  </div>
-                </q-img>
-              </a>
-            </div>
-          </q-tab-panel>
+        <div class="relative-position">
+          <ul class="row q-col-gutter-sm">
+            <li
+              v-for="post in feedStore.posts"
+              :key="post._id"
+              class="list-unstyled col-4 cursor-pointer"
+            >
+              <PostBrick :post="post" />
+            </li>
+          </ul>
 
-          <q-tab-panel name="likes">
-            <div class="text-h6">按讚貼文</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
-        </q-tab-panels>
+          <div
+            v-if="feedStore.posts.length === 0"
+            class="q-pa-lg text-center text-body1"
+          >
+            <template v-if="tab === 'posts'">
+              <q-avatar size="100px" icon="eva-grid-outline" />
+              <p v-if="isLoginUserPage">快來發布你的第一則貼文吧！</p>
+              <p v-else>該用戶沒有任何貼文。</p>
+            </template>
+            <template v-else-if="tab === 'likes'">
+              <q-avatar size="100px" icon="eva-heart-outline" />
+              <p>可以查看你讚過的貼文。只有你可以查看你按過讚的貼文的內容。</p>
+            </template>
+          </div>
+
+          <q-inner-loading
+            :showing="feedStore.loadingPosts"
+            label="Please wait..."
+            label-style="font-size: 1.1em"
+          />
+        </div>
       </section>
     </div>
   </q-page>
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref, provide, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
-import { apiGetPosts, apiGetProfile } from "src/apis";
+import { apiGetPosts, apiGetLikePosts } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
+
+import ProfileSection from "src/pages/PersonalPage/ProfileSection.vue";
+import PostBrick from "src/pages/PersonalPage/PostBrick.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();
 const feedStore = useFeedStore();
 
-const defaultAvatar = inject("defaultAvatar");
-const userId = route.params.userId;
-
-const tab = ref("posts");
-
 /**
- * test funciton
+ * 頁面初始化
  */
-const clickImage = () => {
-  console.log("clickImage :>> ");
-};
+const isLoginUserPage = computed(
+  () => authStore.user._id === route.params.userId
+);
+provide("isLoginUserPage", isLoginUserPage);
 
-/**
- * 格式化萬分位
- */
-const tenThousandths = (number) => {
-  return number < 10000
-    ? number
-    : `${Math.round((number / 10000) * 10) / 10}萬`;
-};
+const tab = ref(route.params.tab || "posts");
 
-/**
- * Get user data
- */
-
-const profile = ref({
-  user: {
-    _id: "629c5db540a4af0ef2f58a93",
-    email: "someone@gmail.com",
-    screenName: "someone",
-    gender: 2,
-  },
-  postsCount: 1,
-  fansCount: 0,
-  followingsCount: 2,
-  isFollowed: false,
-});
-
-// fetchProfile(userId);
-
-/**
- * Get posts
- */
-const posts = ref([]);
-const loading = ref(false);
-const fetchPosts = async () => {
-  loading.value = true;
+const initData = async () => {
+  feedStore.loadingPosts = true;
   try {
-    const res = await apiGetPosts({ user: userId });
-    posts.value = res.data;
+    const res =
+      tab.value === "posts"
+        ? await apiGetPosts({ user: route.params.userId })
+        : await apiGetLikePosts();
+    feedStore.posts = res.data;
   } catch (error) {
     notifyApiError(error);
   } finally {
-    loading.value = false;
+    feedStore.loadingPosts = false;
   }
 };
 
-fetchPosts();
+initData();
+
+/**
+ * 根據 tab 撈貼文資料
+ */
+const renewPosts = async (val) => {
+  feedStore.loadingPosts = true;
+  try {
+    const res =
+      val === "posts"
+        ? await apiGetPosts({ user: route.params.userId })
+        : await apiGetLikePosts();
+    feedStore.posts = res.data;
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    feedStore.loadingPosts = false;
+  }
+};
 </script>
 
-<style lang="scss" scoped>
-.q-img__content .mask {
-  background: rgba(0, 0, 0, 0);
-
-  .mask__content {
-    display: none;
-  }
-}
-
-.q-img__content:hover .mask {
-  background: rgba(0, 0, 0, 0.47);
-
-  .mask__content {
-    display: flex;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

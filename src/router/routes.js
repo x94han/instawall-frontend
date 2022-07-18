@@ -1,3 +1,5 @@
+const ProfileSection = () => import("pages/PersonalPage/ProfileSection.vue");
+
 const routes = [
   {
     path: "/",
@@ -13,6 +15,12 @@ const routes = [
         path: "/",
         name: "HomePage",
         component: () => import("pages/HomePage/HomePage.vue"),
+        meta: { auth: true },
+      },
+      {
+        path: "/account/edit",
+        name: "AccountPage",
+        component: () => import("pages/AccountPage/AccountPage.vue"),
         meta: { auth: true },
       },
     ],

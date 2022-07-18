@@ -13,23 +13,35 @@
             <BaseAvatar size="25px" :src="authStore.user?.avatar" />
             <q-menu transition-show="jump-down" transition-hide="jump-up">
               <q-list style="min-width: 130px">
-                <q-item clickable>
+                <q-item
+                  clickable
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: authStore.user?._id },
+                  }"
+                >
                   <div class="flex items-center q-mr-md">
                     <q-icon size="20px" name="eva-person" />
                   </div>
-                  <q-item-section>個人資料</q-item-section>
+                  <q-item-section>個人檔案</q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: authStore.user?._id, tab: 'likes' },
+                  }"
+                >
+                  <div class="flex items-center q-mr-md">
+                    <q-icon size="20px" name="eva-heart" />
+                  </div>
+                  <q-item-section>按讚貼文</q-item-section>
                 </q-item>
                 <q-item clickable>
                   <div class="flex items-center q-mr-md">
                     <q-icon size="20px" name="eva-people" />
                   </div>
                   <q-item-section>追蹤列表</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <div class="flex items-center q-mr-md">
-                    <q-icon size="20px" name="eva-heart" />
-                  </div>
-                  <q-item-section>按讚列表</q-item-section>
                 </q-item>
                 <q-separator></q-separator>
                 <q-item clickable>
@@ -40,27 +52,40 @@
             </q-menu>
           </q-btn>
         </div>
+
         <div class="sm-screen-only">
           <q-btn flat round icon="eva-menu-outline">
             <q-menu transition-show="jump-down" transition-hide="jump-up">
               <q-list style="min-width: 130px">
-                <q-item clickable>
+                <q-item
+                  clickable
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: authStore.user?._id },
+                  }"
+                >
                   <div class="flex items-center q-mr-md">
                     <q-icon size="20px" name="eva-person" />
                   </div>
-                  <q-item-section>個人資料</q-item-section>
+                  <q-item-section>個人檔案</q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: authStore.user?._id, tab: 'likes' },
+                  }"
+                >
+                  <div class="flex items-center q-mr-md">
+                    <q-icon size="20px" name="eva-heart" />
+                  </div>
+                  <q-item-section>按讚貼文</q-item-section>
                 </q-item>
                 <q-item clickable>
                   <div class="flex items-center q-mr-md">
                     <q-icon size="20px" name="eva-people" />
                   </div>
                   <q-item-section>追蹤列表</q-item-section>
-                </q-item>
-                <q-item clickable>
-                  <div class="flex items-center q-mr-md">
-                    <q-icon size="20px" name="eva-heart" />
-                  </div>
-                  <q-item-section>按讚列表</q-item-section>
                 </q-item>
                 <q-separator></q-separator>
                 <q-item clickable>
