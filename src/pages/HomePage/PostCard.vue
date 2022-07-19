@@ -2,13 +2,30 @@
   <q-card class="q-mb-md" flat bordered>
     <q-item>
       <q-item-section avatar class="col-auto">
-        <BaseAvatar size="md" :src="props.post.user.avatar" />
+        <router-link
+          :to="{
+            name: 'PersonalPage',
+            params: { userId: props.post.user._id },
+          }"
+        >
+          <q-avatar size="md">
+            <img :src="props.post.user.avatar ?? defaultAvatar" />
+          </q-avatar>
+        </router-link>
       </q-item-section>
 
       <q-item-section>
-        <q-item-label class="text-bold">{{
-          props.post.user.screenName
-        }}</q-item-label>
+        <q-item-label>
+          <router-link
+            :to="{
+              name: 'PersonalPage',
+              params: { userId: props.post.user._id },
+            }"
+            class="link-text text-bold"
+          >
+            {{ props.post.user.screenName }}
+          </router-link>
+        </q-item-label>
       </q-item-section>
     </q-item>
 
@@ -52,7 +69,15 @@
           class="flex justify-between q-mb-sm"
         >
           <p class="q-mb-none col self-center">
-            <span class="text-bold q-mr-sm">{{ comment.user.screenName }}</span>
+            <router-link
+              :to="{
+                name: 'PersonalPage',
+                params: { userId: props.post.user._id },
+              }"
+              class="link-text text-bold q-mr-sm"
+            >
+              {{ comment.user.screenName }}
+            </router-link>
             <span>{{ comment.content }}</span>
           </p>
           <div class="col-auto self-center">
@@ -78,10 +103,10 @@
 import { computed, inject } from "vue";
 import { date } from "quasar";
 import { useAuthStore } from "src/stores/authStore";
-import BaseAvatar from "src/components/BaseAvatar.vue";
 
 const authStore = useAuthStore();
 
+const defaultAvatar = inject("defaultAvatar");
 const dialog = inject("dialog");
 const alert = inject("alert");
 const props = defineProps({
