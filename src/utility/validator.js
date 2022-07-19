@@ -11,3 +11,7 @@ export function validPassword(val) {
     val.length >= 8 && !validator.isNumeric(val) && !validator.isAlpha(val)
   );
 }
+
+export function validScreenName(val) {
+  return val && val.length >= 2;
+}

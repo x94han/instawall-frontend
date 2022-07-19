@@ -11,7 +11,7 @@ const cookieOptions = {
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     token: Cookies.get("iwAccessToken"),
-    user: Cookies.get("iwUser"),
+    user: Cookies.get("iwUser"), // { _id, screenName, avatar }
   }),
   getters: {
     validToken() {
@@ -34,6 +34,15 @@ export const useAuthStore = defineStore("auth", {
       this.user = { _id, screenName, avatar };
 
       Cookies.set("iwAccessToken", this.token, cookieOptions);
+      Cookies.set("iwUser", JSON.stringify(this.user), cookieOptions);
+    },
+
+    /**
+     * 更新 authStore.user 以及 Cookies
+     * @param {{ _id: string, screenName: string, avatar: string} } data
+     */
+    updateUser(data) {
+      this.user = data;
       Cookies.set("iwUser", JSON.stringify(this.user), cookieOptions);
     },
     logout() {
