@@ -21,8 +21,19 @@
               :to="{ name: 'AccountPage' }"
             />
             <template v-else>
-              <q-btn v-if="profile.isFollowed" label="追蹤" color="primary" />
-              <q-btn v-else icon="eva-person-done" outline color="primary" />
+              <q-btn
+                v-if="!profile.isFollowed"
+                label="追蹤"
+                @click="followPageOwner(profile)"
+                color="primary"
+              />
+              <q-btn
+                v-else
+                icon="eva-person-done"
+                @click="unfollowPageOwner(profile)"
+                outline
+                color="primary"
+              />
             </template>
           </div>
         </div>
@@ -108,18 +119,46 @@
             <div class="col">
               <div class="row">
                 <div class="q-pr-md">
-                  <q-avatar size="lg">
-                    <img :src="item.user.avatar ?? defaultAvatar" />
-                  </q-avatar>
+                  <router-link
+                    :to="{
+                      name: 'PersonalPage',
+                      params: { userId: item.user._id },
+                    }"
+                  >
+                    <q-avatar size="lg">
+                      <img :src="item.user.avatar ?? defaultAvatar" />
+                    </q-avatar>
+                  </router-link>
                 </div>
                 <div class="self-center text-bold">
-                  {{ item.user.screenName }}
+                  <router-link
+                    :to="{
+                      name: 'PersonalPage',
+                      params: { userId: item.user._id },
+                    }"
+                    class="link-text"
+                  >
+                    {{ item.user.screenName }}
+                  </router-link>
                 </div>
               </div>
             </div>
             <div class="col-auto self-center">
-              <q-btn v-if="item.isFollowed" label="追蹤中" color="primary" />
-              <q-btn v-else label="追蹤" dense outline color="primary" />
+              <q-btn
+                v-if="item.isFollowed"
+                label="追蹤中"
+                @click="unfollowUser(item)"
+                :loading="loadingBtn === item.user._id"
+                outline
+                color="primary"
+              />
+              <q-btn
+                v-else-if="item.user._id !== authStore.user._id"
+                label="追蹤"
+                @click="followUser(item)"
+                :loading="loadingBtn === item.user._id"
+                color="primary"
+              />
             </div>
           </li>
         </ul>
@@ -131,10 +170,18 @@
 <script setup>
 import { ref, inject, reactive } from "vue";
 import { useRoute } from "vue-router";
-import { apiGetProfile, apiGetFans, apiGetFollowings } from "src/apis";
+import { useAuthStore } from "src/stores/authStore";
+import {
+  apiGetProfile,
+  apiGetFans,
+  apiGetFollowings,
+  apiFollowUser,
+  apiUnfollowUser,
+} from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 
 const route = useRoute();
+const authStore = useAuthStore();
 
 const defaultAvatar = inject("defaultAvatar");
 const tenThousandths = inject("tenThousandths");
@@ -176,6 +223,63 @@ const dialog = reactive({
 });
 
 initData();
+
+/**
+ * 追蹤 / 退追蹤
+ */
+const loadingBtn = ref("");
+
+const followPageOwner = async (target) => {
+  loadingBtn.value = target.user._id;
+  try {
+    await apiFollowUser(target.user._id);
+    target.isFollowed = true;
+    target.fansCount++;
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    loadingBtn.value = "";
+  }
+};
+
+const unfollowPageOwner = async (target) => {
+  loadingBtn.value = target.user._id;
+  try {
+    await apiUnfollowUser(target.user._id);
+    target.isFollowed = false;
+    target.fansCount--;
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    loadingBtn.value = "";
+  }
+};
+
+const followUser = async (target) => {
+  loadingBtn.value = target.user._id;
+  try {
+    await apiFollowUser(target.user._id);
+    target.isFollowed = true;
+    profile.value.followingsCount++;
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    loadingBtn.value = "";
+  }
+};
+
+const unfollowUser = async (target) => {
+  loadingBtn.value = target.user._id;
+  try {
+    await apiUnfollowUser(target.user._id);
+    target.isFollowed = false;
+    profile.value.followingsCount--;
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    loadingBtn.value = "";
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

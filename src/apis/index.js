@@ -10,6 +10,8 @@ export const apiGetLikePosts = (id, params) =>
   api.get(`${USER_URL}/likes`, { params });
 export const apiGetFans = (id) => api.get(`${USER_URL}/${id}/fans`);
 export const apiGetFollowings = (id) => api.get(`${USER_URL}/${id}/followings`);
+export const apiFollowUser = (id) => api.post(`${USER_URL}/${id}/follow`);
+export const apiUnfollowUser = (id) => api.delete(`${USER_URL}/${id}/follow`);
 
 const POST_URL = "posts";
 export const apiGetPosts = (params) => api.get(`${POST_URL}`, { params });
