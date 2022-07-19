@@ -6,6 +6,8 @@ export const apiSignup = (data) => api.post(`${USER_URL}/signup`, data);
 export const apiGetProfile = (id) => api.get(`${USER_URL}/${id}/profile`);
 export const apiUpdateProfile = (id, data) =>
   api.patch(`${USER_URL}/${id}/profile`, data);
+export const apiUpdatePassword = (data) =>
+  api.patch(`${USER_URL}/updatePassword`, data);
 export const apiGetLikePosts = (id, params) =>
   api.get(`${USER_URL}/likes`, { params });
 export const apiGetFans = (id) => api.get(`${USER_URL}/${id}/fans`);

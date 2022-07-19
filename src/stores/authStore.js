@@ -27,6 +27,11 @@ export const useAuthStore = defineStore("auth", {
       const res = await apiSignup(param);
       this.saveLoginData(res);
     },
+
+    /**
+     * 更新 authStore.token, authStore.user 以及其 Cookies
+     * @param {{ status: string, data: { user: object, token: string}} } res
+     */
     saveLoginData(res) {
       const { _id, screenName, avatar } = res.data.user;
 
