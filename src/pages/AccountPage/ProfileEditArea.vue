@@ -62,14 +62,12 @@
 
 <script setup>
 import { ref, reactive, inject } from "vue";
-import { useRouter } from "vue-router";
 import { useAuthStore } from "src/stores/authStore";
 import { validScreenName } from "src/utility/validator";
 import { genderOptions } from "src/utility/options";
 import { apiGetProfile, apiUploadAvatar, apiUpdateProfile } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 
-const router = useRouter();
 const authStore = useAuthStore();
 
 const defaultAvatar = inject("defaultAvatar");
@@ -77,7 +75,6 @@ const defaultAvatar = inject("defaultAvatar");
 /**
  * 初始化
  */
-let hasAvatar = false;
 const form = reactive({
   avatar: "",
   screenName: "",
@@ -88,13 +85,11 @@ const loading = ref("");
 const initData = async () => {
   try {
     const res = await apiGetProfile(authStore.user._id);
-    hasAvatar = !!res.data.user.avatar;
     form.avatar = res.data.user.avatar;
     form.screenName = res.data.user.screenName;
     form.gender = res.data.user.gender;
   } catch (error) {
     notifyApiError(error);
-  } finally {
   }
 };
 
@@ -123,7 +118,6 @@ const uploadAvatar = async (evt) => {
 const onSubmit = async (evt) => {
   loading.value = "submit";
   const { data } = await apiUpdateProfile(authStore.user._id, form);
-  console.log("data :>> ", data);
   authStore.updateUser({
     _id: data._id,
     screenName: data.screenName,
