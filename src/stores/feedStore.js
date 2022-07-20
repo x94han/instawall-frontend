@@ -6,5 +6,10 @@ export const useFeedStore = defineStore("feed", {
     loadingPosts: false,
   }),
   getters: {},
-  actions: {},
+  actions: {
+    addComment(newComment) {
+      const foundPost = this.posts.find((post) => post._id === newComment.post);
+      foundPost && foundPost.comments.push(newComment);
+    },
+  },
 });

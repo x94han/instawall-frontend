@@ -1,5 +1,9 @@
 <template>
-  <q-img @click="clickImage" :src="props.post.image" ratio="1">
+  <q-img
+    @click="emit('showPost', props.post)"
+    :src="props.post.image"
+    ratio="1"
+  >
     <div class="mask absolute-full text-subtitle2 flex flex-center">
       <ul class="mask__content list-unstyled flex flex-center wrap">
         <li class="q-mr-md">
@@ -16,12 +20,13 @@
 </template>
 
 <script setup>
-import { ref, provide, inject } from "vue";
+import { ref, inject } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 
 const authStore = useAuthStore();
 const feedStore = useFeedStore();
+const tenThousandths = inject("tenThousandths");
 
 const props = defineProps({
   post: {
@@ -30,11 +35,7 @@ const props = defineProps({
   },
 });
 
-const tenThousandths = inject("tenThousandths");
-
-const clickImage = () => {
-  console.log("clickImage :>> ");
-};
+const emit = defineEmits(["showPost"]);
 </script>
 
 <style lang="scss" scoped>

@@ -31,7 +31,7 @@
               :key="post._id"
               class="list-unstyled col-4 cursor-pointer"
             >
-              <PostBrick :post="post" />
+              <PostBrick :post="post" @show-post="openPostDialog" />
             </li>
           </ul>
 
@@ -58,6 +58,12 @@
         </div>
       </section>
     </div>
+
+    <PostDialog
+      v-model="dialogHandler"
+      :post="dialogPost"
+      @add-comment="feedStore.addComment"
+    />
   </q-page>
 </template>
 
@@ -72,6 +78,7 @@ import notifyApiError from "src/utility/notifyApiError";
 
 import ProfileSection from "src/pages/PersonalPage/ProfileSection.vue";
 import PostBrick from "src/pages/PersonalPage/PostBrick.vue";
+import PostDialog from "src/components/PostDialog.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -129,6 +136,16 @@ const renewPosts = async (val) => {
   } finally {
     feedStore.loadingPosts = false;
   }
+};
+
+/**
+ * CommentDialog
+ */
+const dialogHandler = ref(false);
+const dialogPost = ref({});
+const openPostDialog = (post) => {
+  dialogPost.value = post;
+  dialogHandler.value = true;
 };
 </script>
 

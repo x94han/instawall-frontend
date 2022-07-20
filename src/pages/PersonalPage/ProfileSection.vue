@@ -107,7 +107,10 @@
       <q-separator />
 
       <q-card-section style="max-height: 50vh" class="scroll">
-        <ul class="list-unstyled q-ma-none">
+        <ul v-if="dialog.loading" class="list-unstyled">
+          <li v-for="n in 3" :key="n"><SkeletonAvatarName /></li>
+        </ul>
+        <ul v-else class="list-unstyled q-ma-none" style="min-height: 200px">
           <li v-if="dialog.users.length == 0" class="text-center">
             {{ `目前無${dialog.title}。` }}
           </li>
@@ -148,7 +151,7 @@
                 v-if="item.isFollowed"
                 label="追蹤中"
                 @click="unfollowUser(item)"
-                :loading="loadingBtn === item.user._id"
+                :loading="dialog.loadingBtn === item.user._id"
                 outline
                 color="primary"
               />
@@ -156,7 +159,7 @@
                 v-else-if="item.user._id !== authStore.user._id"
                 label="追蹤"
                 @click="followUser(item)"
-                :loading="loadingBtn === item.user._id"
+                :loading="dialog.loadingBtn === item.user._id"
                 color="primary"
               />
             </div>
@@ -180,9 +183,10 @@ import {
 } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 
+import SkeletonAvatarName from "components/SkeletonAvatarName.vue";
+
 const route = useRoute();
 const authStore = useAuthStore();
-
 const defaultAvatar = inject("defaultAvatar");
 const tenThousandths = inject("tenThousandths");
 const isLoginUserPage = inject("isLoginUserPage");
@@ -203,12 +207,16 @@ const initData = async () => {
 };
 
 const dialog = reactive({
+  loading: false,
+  loadingBtn: "",
   handler: false,
   title: "",
   users: [],
   open: async (title) => {
-    dialog.handler = true;
+    dialog.loading = true;
+    dialog.users = [];
     dialog.title = title;
+    dialog.handler = true;
     try {
       const res =
         title === "粉絲"
@@ -218,6 +226,8 @@ const dialog = reactive({
     } catch (error) {
       notifyApiError(error);
       dialog.handler = false;
+    } finally {
+      dialog.loading = false;
     }
   },
 });
@@ -231,10 +241,8 @@ onBeforeRouteUpdate(async (to, from) => {
 /**
  * 追蹤 / 退追蹤
  */
-const loadingBtn = ref("");
-
 const followPageOwner = async (target) => {
-  loadingBtn.value = target.user._id;
+  dialog.loadingBtn = target.user._id;
   try {
     await apiFollowUser(target.user._id);
     target.isFollowed = true;
@@ -242,12 +250,12 @@ const followPageOwner = async (target) => {
   } catch (error) {
     notifyApiError(error);
   } finally {
-    loadingBtn.value = "";
+    dialog.loadingBtn = "";
   }
 };
 
 const unfollowPageOwner = async (target) => {
-  loadingBtn.value = target.user._id;
+  dialog.loadingBtn = target.user._id;
   try {
     await apiUnfollowUser(target.user._id);
     target.isFollowed = false;
@@ -255,33 +263,33 @@ const unfollowPageOwner = async (target) => {
   } catch (error) {
     notifyApiError(error);
   } finally {
-    loadingBtn.value = "";
+    dialog.loadingBtn = "";
   }
 };
 
 const followUser = async (target) => {
-  loadingBtn.value = target.user._id;
+  dialog.loadingBtn = target.user._id;
   try {
     await apiFollowUser(target.user._id);
     target.isFollowed = true;
-    profile.value.followingsCount++;
+    isLoginUserPage.value && profile.value.followingsCount++;
   } catch (error) {
     notifyApiError(error);
   } finally {
-    loadingBtn.value = "";
+    dialog.loadingBtn = "";
   }
 };
 
 const unfollowUser = async (target) => {
-  loadingBtn.value = target.user._id;
+  dialog.loadingBtn = target.user._id;
   try {
     await apiUnfollowUser(target.user._id);
     target.isFollowed = false;
-    profile.value.followingsCount--;
+    isLoginUserPage.value && profile.value.followingsCount--;
   } catch (error) {
     notifyApiError(error);
   } finally {
-    loadingBtn.value = "";
+    dialog.loadingBtn = "";
   }
 };
 </script>
