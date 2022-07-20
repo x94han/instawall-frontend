@@ -63,10 +63,11 @@
 
 <script setup>
 import { ref, provide, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 import { apiGetPosts, apiGetLikePosts } from "src/apis";
+import { validObjectId } from "src/utility/validator";
 import notifyApiError from "src/utility/notifyApiError";
 
 import ProfileSection from "src/pages/PersonalPage/ProfileSection.vue";
@@ -102,6 +103,15 @@ const initData = async () => {
 };
 
 initData();
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.userId !== from.params.userId) {
+    if (!validObjectId(to.params.userId)) return { name: "NotFoundPage" };
+
+    route.params.userId = to.params.userId;
+    initData();
+  }
+});
 
 /**
  * 根據 tab 撈貼文資料

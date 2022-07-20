@@ -15,3 +15,7 @@ export function validPassword(val) {
 export function validScreenName(val) {
   return val && val.length >= 2;
 }
+
+export function validObjectId(val) {
+  return new RegExp(/^[0-9a-fA-F]{24}$/).test(val);
+}

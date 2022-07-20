@@ -1,4 +1,4 @@
-const ProfileSection = () => import("pages/PersonalPage/ProfileSection.vue");
+import { validObjectId } from "src/utility/validator";
 
 const routes = [
   {
@@ -10,6 +10,9 @@ const routes = [
         name: "PersonalPage",
         component: () => import("pages/PersonalPage/PersonalPage.vue"),
         meta: { auth: true },
+        beforeEnter: (to, from) => {
+          if (!validObjectId(to.params.userId)) return { name: "NotFoundPage" };
+        },
       },
       {
         path: "/",
@@ -39,6 +42,7 @@ const routes = [
   // but you can also remove it
   {
     path: "/:catchAll(.*)*",
+    name: "NotFoundPage",
     component: () => import("pages/ErrorNotFound.vue"),
   },
 ];

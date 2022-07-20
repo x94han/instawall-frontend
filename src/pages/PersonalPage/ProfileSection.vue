@@ -169,7 +169,7 @@
 
 <script setup>
 import { ref, inject, reactive } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, onBeforeRouteUpdate } from "vue-router";
 import { useAuthStore } from "src/stores/authStore";
 import {
   apiGetProfile,
@@ -223,6 +223,10 @@ const dialog = reactive({
 });
 
 initData();
+
+onBeforeRouteUpdate(async (to, from) => {
+  initData();
+});
 
 /**
  * 追蹤 / 退追蹤
