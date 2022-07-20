@@ -10,7 +10,9 @@
           <q-btn to="/login" flat round icon="eva-search-outline" />
           <q-btn to="/posts" flat round icon="eva-plus-square-outline" />
           <q-btn flat round>
-            <BaseAvatar size="25px" :src="authStore.user?.avatar" />
+            <q-avatar size="sm">
+              <img :src="authStore.user?.avatar || defaultAvatar" />
+            </q-avatar>
             <q-menu transition-show="jump-down" transition-hide="jump-up">
               <q-list style="min-width: 130px">
                 <q-item
@@ -106,7 +108,6 @@
         class="text-grey-10"
       >
         <q-route-tab to="/" icon="eva-home-outline" />
-        <!-- <q-route-tab to="/login" icon="eva-search-outline" /> -->
         <q-route-tab to="/posts" icon="eva-plus-square-outline" />
         <q-route-tab
           :to="{
@@ -114,7 +115,9 @@
             params: { userId: authStore.user?._id },
           }"
         >
-          <BaseAvatar size="25px" :src="authStore.user?.avatar" />
+          <q-avatar size="sm">
+            <img :src="authStore.user?.avatar || defaultAvatar" />
+          </q-avatar>
         </q-route-tab>
       </q-tabs>
     </q-footer>
@@ -126,10 +129,11 @@
 </template>
 
 <script setup>
-import BaseAvatar from "src/components/BaseAvatar.vue";
+import { inject } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 
 const authStore = useAuthStore();
+const defaultAvatar = inject("defaultAvatar");
 </script>
 
 <style lang="scss">

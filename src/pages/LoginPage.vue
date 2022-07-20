@@ -83,7 +83,9 @@
         <q-card flat bordered class="text-center">
           <q-card-section>
             <h3 class="text-grand-hotel q-my-lg">Instawall</h3>
-            <BaseAvatar size="100px" :src="authStore.user?.avatar" />
+            <q-avatar size="100px">
+              <img :src="authStore.user?.avatar || defaultAvatar" />
+            </q-avatar>
           </q-card-section>
 
           <q-card-section>
@@ -112,17 +114,17 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, inject } from "vue";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useAuthStore } from "src/stores/authStore";
 import { validEmail, validPassword } from "src/utility/validator";
 import notifyApiError from "src/utility/notifyApiError";
-import BaseAvatar from "src/components/BaseAvatar.vue";
 
 const $q = useQuasar();
 const router = useRouter();
 const authStore = useAuthStore();
+const defaultAvatar = inject("defaultAvatar");
 
 /**
  *  一般登入

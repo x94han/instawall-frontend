@@ -8,7 +8,7 @@ import { defineComponent, provide } from "vue";
 export default defineComponent({
   name: "App",
   setup() {
-    provide("defaultAvatar", "src/assets/images/default-avatar.jpg");
+    provide("defaultAvatar", "https://i.imgur.com/d2lfv0R.jpg");
     provide("tenThousandths", (number) => {
       return number < 10000
         ? number

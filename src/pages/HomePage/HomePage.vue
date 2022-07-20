@@ -1,8 +1,8 @@
 <template>
   <q-page>
-    <div class="constrain row justify-center q-py-md">
+    <div class="constrain row justify-center q-py-lg">
       <div class="col">
-        <ul class="list-unstyled q-ml-auto" style="max-width: 470px">
+        <ul class="list-unstyled q-mt-none q-ml-auto" style="max-width: 470px">
           <li v-if="posts.length === 0" class="text-center">
             <SkeletonCard v-if="loading" class="full-width" />
             <q-card v-else flat bordered>
@@ -21,13 +21,30 @@
       <div class="col-4 lg-screen-only">
         <q-item class="fixed">
           <q-item-section avatar>
-            <BaseAvatar :src="authStore.user.avatar" />
+            <router-link
+              :to="{
+                name: 'PersonalPage',
+                params: { userId: authStore.user._id },
+              }"
+            >
+              <q-avatar>
+                <img :src="authStore.user.avatar || defaultAvatar" />
+              </q-avatar>
+            </router-link>
           </q-item-section>
 
           <q-item-section>
-            <q-item-label class="text-bold">{{
-              authStore.user.screenName
-            }}</q-item-label>
+            <q-item-label>
+              <router-link
+                :to="{
+                  name: 'PersonalPage',
+                  params: { userId: authStore.user._id },
+                }"
+                class="link-text text-bold"
+              >
+                {{ authStore.user.screenName }}
+              </router-link></q-item-label
+            >
           </q-item-section>
         </q-item>
       </div>
@@ -39,17 +56,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, provide, readonly } from "vue";
+import { ref, reactive, provide, inject } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 import { apiGetPosts, apiAddComment, apiDeleteComment } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
-import BaseAvatar from "src/components/BaseAvatar.vue";
 import SkeletonCard from "src/components/SkeletonCard.vue";
 import PostCard from "src/pages/HomePage/PostCard.vue";
 import CommentDialog from "src/pages/HomePage/CommentDialog.vue";
 import CommentDeleteAlert from "src/pages/HomePage/CommentDeleteAlert.vue";
 
 const authStore = useAuthStore();
+const defaultAvatar = inject("defaultAvatar");
 
 /**
  * Get posts

@@ -5,7 +5,9 @@
         <q-card-section class="row items-center">
           <div class="row">
             <div class="col-auto q-pr-md">
-              <BaseAvatar size="md" :src="dialog.post.user?.avatar" />
+              <q-avatar size="md">
+                <img :src="dialog.post.user?.avatar || defaultAvatar" />
+              </q-avatar>
             </div>
             <div class="self-center text-bold">
               {{ dialog.post.user?.screenName }}
@@ -19,11 +21,9 @@
 
         <q-card-section style="max-height: 50vh" class="scroll">
           <div class="q-mb-none col self-center">
-            <BaseAvatar
-              size="md"
-              :src="dialog.post.user?.avatar"
-              class="q-mr-md"
-            />
+            <q-avatar size="md" class="q-mr-md">
+              <img :src="dialog.post.user?.avatar || defaultAvatar" />
+            </q-avatar>
             <span class="text-bold q-mr-sm">{{
               dialog.post.user?.screenName
             }}</span>
@@ -38,11 +38,9 @@
             >
               <div class="flex justify-between">
                 <p class="q-mb-none col self-center">
-                  <BaseAvatar
-                    size="md"
-                    :src="comment.user.avatar"
-                    class="q-mr-md"
-                  />
+                  <q-avatar size="md" class="q-mr-md">
+                    <img :src="comment.user.avatar || defaultAvatar" />
+                  </q-avatar>
                   <span class="text-bold q-mr-sm">{{
                     comment.user.screenName
                   }}</span>
@@ -124,10 +122,9 @@ import { date } from "quasar";
 import { apiAddComment } from "src/apis";
 import { useAuthStore } from "src/stores/authStore";
 import notifyApiError from "src/utility/notifyApiError";
-import BaseAvatar from "src/components/BaseAvatar.vue";
 
 const authStore = useAuthStore();
-
+const defaultAvatar = inject("defaultAvatar");
 const dialog = inject("dialog");
 const alert = inject("alert");
 
