@@ -37,7 +37,15 @@
 
       <!-- post 操作按鈕 -->
       <q-card-actions>
-        <q-btn flat round fab-mini icon="eva-heart-outline" />
+        <q-btn
+          :icon="isLiked ? 'eva-heart' : 'eva-heart-outline'"
+          @click="likePost"
+          :loading="loadingLike"
+          :text-color="isLiked ? 'red' : ''"
+          round
+          flat
+          fab-mini
+        />
         <q-btn
           @click="$emit('showComments', props.post)"
           flat
@@ -90,9 +98,11 @@
 </template>
 
 <script setup>
-import { computed, inject } from "vue";
+import { ref, computed, inject } from "vue";
 import { date } from "quasar";
 import { useAuthStore } from "src/stores/authStore";
+import { apiLikePost, apiUnlikePost } from "src/apis";
+import notifyApiError from "src/utility/notifyApiError";
 
 import CommentItem from "src/components/CommentItem.vue";
 
@@ -110,7 +120,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["showComments", "deleteComment"]);
+const emits = defineEmits(["showComments", "deleteComment", "like"]);
 
 /**
  * Init
@@ -125,5 +135,29 @@ const commentsByMe = computed(() => {
 
 const onCommentItemDelete = (commentId, postId) => {
   emits("deleteComment", commentId, postId);
+};
+
+const isLiked = computed(
+  () => props.post.likes?.includes(authStore.user._id) ?? false
+);
+
+/**
+ * 按讚 / 退讚
+ */
+const loadingLike = ref(false);
+
+const likePost = async () => {
+  loadingLike.value = true;
+  try {
+    const { data: newPost } = !isLiked.value
+      ? await apiLikePost(props.post._id)
+      : await apiUnlikePost(props.post._id);
+    const { _id, likes } = newPost;
+    emits("like", _id, likes);
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    loadingLike.value = false;
+  }
 };
 </script>

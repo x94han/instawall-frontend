@@ -30,6 +30,7 @@
               :post="post"
               @show-comments="openPostDialog"
               @delete-comment="feedStore.removeComment"
+              @like="feedStore.updateLikes"
             />
           </li>
         </ul>
