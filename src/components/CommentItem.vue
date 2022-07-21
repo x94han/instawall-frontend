@@ -1,19 +1,32 @@
 <template>
   <div class="row q-gutter-md">
-    <div class="col-auto">
-      <q-avatar size="md">
-        <img :src="props.comment.user.avatar || defaultAvatar" />
-      </q-avatar>
+    <div v-if="props.avatar" class="col-auto">
+      <router-link
+        :to="{
+          name: 'PersonalPage',
+          params: { userId: props.comment.user._id },
+        }"
+      >
+        <q-avatar size="md">
+          <img :src="props.comment.user.avatar || defaultAvatar" />
+        </q-avatar>
+      </router-link>
     </div>
 
     <div class="col">
       <p class="q-mb-none">
-        <span class="text-bold q-mr-sm">{{
-          props.comment.user.screenName
-        }}</span>
+        <router-link
+          :to="{
+            name: 'PersonalPage',
+            params: { userId: props.comment.user._id },
+          }"
+          class="q-mr-sm link-text text-bold"
+        >
+          {{ props.comment.user.screenName }}
+        </router-link>
         <span class="overflow-wrap-break">{{ props.comment.content }}</span>
       </p>
-      <div class="text-caption text-grey">
+      <div v-if="props.createdAt" class="text-caption text-grey">
         {{ date.formatDate(new Date(props.comment.createdAt), "YYYY年M月D日") }}
       </div>
     </div>
@@ -62,6 +75,14 @@ const props = defineProps({
   comment: {
     type: Object,
     required: true,
+  },
+  avatar: {
+    type: Boolean,
+    default: true,
+  },
+  createdAt: {
+    type: Boolean,
+    default: true,
   },
 });
 
