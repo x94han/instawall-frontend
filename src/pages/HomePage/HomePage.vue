@@ -17,7 +17,7 @@
           class="list-unstyled q-mt-none q-ml-auto"
           style="max-width: 470px"
         >
-          <li v-if="posts.length === 0" class="text-center">
+          <li v-if="feedStore.posts.length === 0" class="text-center">
             <q-card flat bordered>
               <q-card-section class="text-center">
                 發布第一則貼文吧！
@@ -25,8 +25,12 @@
             </q-card>
           </li>
 
-          <li v-for="post in posts" :key="post._id">
-            <PostCard :post="post" @show-comments="openPostDialog" />
+          <li v-for="post in feedStore.posts" :key="post._id">
+            <PostCard
+              :post="post"
+              @show-comments="openPostDialog"
+              @delete-comment="feedStore.removeComment"
+            />
           </li>
         </ul>
       </div>
@@ -74,30 +78,30 @@
 </template>
 
 <script setup>
-import { ref, reactive, provide, inject } from "vue";
+import { ref, inject } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
-import { apiGetPosts, apiAddComment, apiDeleteComment } from "src/apis";
+import { apiGetPosts } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 
 import SkeletonCard from "src/components/SkeletonCard.vue";
-import PostCard from "src/pages/HomePage/PostCard.vue";
 import PostDialog from "src/components/PostDialog.vue";
+import PostCard from "src/pages/HomePage/PostCard.vue";
 
 const authStore = useAuthStore();
 const feedStore = useFeedStore();
 const defaultAvatar = inject("defaultAvatar");
 
 /**
- * Get posts
+ * init
  */
-const posts = ref([]);
 const loading = ref(false);
+
 const getData = async () => {
   loading.value = true;
   try {
     const res = await apiGetPosts();
-    posts.value = res.data;
+    feedStore.posts = res.data;
   } catch (error) {
     notifyApiError(error);
   } finally {
@@ -108,7 +112,7 @@ const getData = async () => {
 getData();
 
 /**
- * Leave comment & Update post for posts
+ * Open PostDialog
  */
 const dialogHandler = ref(false);
 const dialogPost = ref({});
@@ -117,17 +121,6 @@ const openPostDialog = (post) => {
   dialogPost.value = post;
   dialogHandler.value = true;
 };
-
-const dialog = reactive({
-  post: {},
-  updateComments: (newComment) => {
-    const foundPost = posts.value.find((post) => post._id === newComment.post);
-    foundPost && foundPost.comments.push(newComment);
-    dialog.post = foundPost;
-  },
-  handler: false,
-});
-provide("dialog", dialog);
 </script>
 
 <style lang="scss" scoped></style>

@@ -30,7 +30,7 @@
       </q-item-section>
     </q-item>
 
-    <!-- card body -->
+    <!-- card body & footer -->
     <div>
       <!-- post image -->
       <q-img v-if="props.post.image" :src="props.post.image" />
@@ -50,7 +50,9 @@
       <!-- post 資訊顯示 -->
       <q-card-section class="q-pt-none">
         <div v-if="props.post.likes.length > 0" class="text-bold q-mb-xs">
-          <a class="cursor-pointer"> {{ props.post.likes.length }} 個讚</a>
+          <a class="cursor-pointer">
+            {{ tenThousandths(props.post.likes.length) }} 個讚</a
+          >
         </div>
 
         <div class="overflow-wrap-break white-space-line q-mb-sm">
@@ -63,41 +65,24 @@
           class="q-mb-sm"
         >
           <a class="cursor-pointer text-body2 text-grey">
-            查看全部 {{ props.post.comments.length }} 則留言</a
+            查看全部 {{ tenThousandths(props.post.comments.length) }} 則留言</a
           >
         </div>
+
+        <!-- 自己的留言顯示 -->
         <ul class="list-unstyled">
-          <li
-            v-for="comment in commentsByMe"
-            :key="comment._id"
-            class="flex justify-between q-mb-sm"
-          >
-            <p class="q-mb-none col self-center">
-              <router-link
-                :to="{
-                  name: 'PersonalPage',
-                  params: { userId: props.post.user._id },
-                }"
-                class="link-text text-bold q-mr-sm"
-              >
-                {{ comment.user.screenName }}
-              </router-link>
-              <span>{{ comment.content }}</span>
-            </p>
-            <div class="col-auto self-center">
-              <q-btn
-                @click="toDeleteComment(comment)"
-                flat
-                round
-                size="xs"
-                icon="eva-trash-2-outline"
-              />
-            </div>
+          <li v-for="comment in commentsByMe" :key="comment._id">
+            <CommentItem
+              :comment="comment"
+              @delete="onCommentItemDelete"
+              :avatar="false"
+              :createdAt="false"
+            />
           </li>
         </ul>
 
         <div class="text-caption text-grey">
-          {{ formatData(props.post.createdAt) }}
+          {{ date.formatDate(new Date(props.post.createdAt), "YYYY年M月D日") }}
         </div>
       </q-card-section>
     </div>
@@ -109,9 +94,11 @@ import { computed, inject } from "vue";
 import { date } from "quasar";
 import { useAuthStore } from "src/stores/authStore";
 
+import CommentItem from "src/components/CommentItem.vue";
+
 const authStore = useAuthStore();
 const defaultAvatar = inject("defaultAvatar");
-const dialog = inject("dialog");
+const tenThousandths = inject("tenThousandths");
 
 /**
  * Component Basics
@@ -123,7 +110,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["showComments"]);
+const emits = defineEmits(["showComments", "deleteComment"]);
 
 /**
  * Init
@@ -136,6 +123,7 @@ const commentsByMe = computed(() => {
   );
 });
 
-const formatData = (timeStamp) =>
-  date.formatDate(new Date(timeStamp), "YYYY年M月D日");
+const onCommentItemDelete = (commentId, postId) => {
+  emits("deleteComment", commentId, postId);
+};
 </script>
