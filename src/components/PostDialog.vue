@@ -91,10 +91,18 @@
           <!-- footer -->
           <div>
             <q-card-actions>
-              <q-btn flat round fab-mini icon="eva-heart-outline" />
+              <q-btn
+                :icon="isLiked ? 'eva-heart' : 'eva-heart-outline'"
+                @click="likePost"
+                :loading="loadingLike"
+                :text-color="isLiked ? 'red' : ''"
+                round
+                flat
+                fab-mini
+              />
               <div v-if="props.post.likes.length > 0" class="text-bold q-ml-sm">
                 <a class="cursor-pointer">
-                  {{ props.post.likes.length }} 個讚</a
+                  {{ tenThousandths(props.post.likes.length) }} 個讚</a
                 >
               </div>
             </q-card-actions>
@@ -104,24 +112,9 @@
               }}
             </q-card-section>
 
-            <q-card-section
-              v-if="props.post.likes.length > 0"
-              class="text-bold q-mb-xs"
-            >
-              <a class="cursor-pointer"> {{ props.post.likes.length }} 個讚</a>
-
-              <div class="text-caption text-grey">
-                {{
-                  date.formatDate(
-                    new Date(props.post.createdAt),
-                    "YYYY年M月D日"
-                  )
-                }}
-              </div>
-            </q-card-section>
-
             <q-separator></q-separator>
 
+            <!-- 留言 -->
             <q-card-actions>
               <q-input
                 v-model="commentContent"
@@ -138,7 +131,7 @@
                   <q-btn
                     @click="leaveComment"
                     :disable="commentContent.length === 0"
-                    :loading="loading"
+                    :loading="loadingLeave"
                     flat
                     color="primary"
                     label="發佈"
@@ -154,9 +147,9 @@
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 import { date } from "quasar";
-import { apiAddComment } from "src/apis";
+import { apiAddComment, apiLikePost, apiUnlikePost } from "src/apis";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 import notifyApiError from "src/utility/notifyApiError";
@@ -166,6 +159,7 @@ import CommentItem from "./CommentItem.vue";
 const authStore = useAuthStore();
 const feedStore = useFeedStore();
 const defaultAvatar = inject("defaultAvatar");
+const tenThousandths = inject("tenThousandths");
 
 /**
  * Component Basics
@@ -182,7 +176,12 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["update:modelValue", "addComment", "deleteComment"]);
+const emits = defineEmits([
+  "update:modelValue",
+  "addComment",
+  "deleteComment",
+  "like",
+]);
 
 /**
  * Page Basics
@@ -191,11 +190,38 @@ const onCommentItemDelete = (commentId, postId) => {
   emits("deleteComment", commentId, postId);
 };
 
+const isLiked = computed(
+  () => props.post.likes?.includes(authStore.user._id) ?? false
+);
+
+/**
+ * 按讚 / 退讚
+ */
+const loadingLike = ref(false);
+
+const likePost = async () => {
+  loadingLike.value = true;
+  try {
+    const { data: newPost } = !isLiked.value
+      ? await apiLikePost(props.post._id)
+      : await apiUnlikePost(props.post._id);
+    const { _id, likes } = newPost;
+    emits("like", _id, likes);
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
+    loadingLike.value = false;
+  }
+};
+
+/**
+ * 留言
+ */
 const commentContent = ref("");
-const loading = ref(false);
+const loadingLeave = ref(false);
 
 const leaveComment = async () => {
-  loading.value = true;
+  loadingLeave.value = true;
   try {
     const { data: newComment } = await apiAddComment(props.post._id, {
       content: commentContent.value,
@@ -205,7 +231,7 @@ const leaveComment = async () => {
   } catch (error) {
     notifyApiError(error);
   } finally {
-    loading.value = false;
+    loadingLeave.value = false;
   }
 };
 </script>

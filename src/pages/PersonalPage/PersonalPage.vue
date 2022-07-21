@@ -64,6 +64,7 @@
       :post="dialogPost"
       @add-comment="feedStore.addComment"
       @delete-comment="feedStore.removeComment"
+      @like="feedStore.updateLikes"
     />
   </q-page>
 </template>
