@@ -63,6 +63,7 @@
       v-model="dialogHandler"
       :post="dialogPost"
       @add-comment="feedStore.addComment"
+      @delete-comment="feedStore.removeComment"
     />
   </q-page>
 </template>
