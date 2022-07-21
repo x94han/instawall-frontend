@@ -6,7 +6,7 @@ import { resolveTxt } from "dns/promises";
         <q-avatar size="xl" class="q-mr-lg">
           <img :src="authStore.user.avatar ?? defaultAvatar" />
         </q-avatar>
-        <span class="text-h6">{{ authStore.user.screenName }}</span>
+        <span class="text-h6 self-center">{{ authStore.user.screenName }}</span>
       </q-item>
       <q-item class="column">
         <span class="text-subtitle1 text-bold"> 舊密碼 </span>
@@ -59,7 +59,7 @@ import { resolveTxt } from "dns/promises";
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, inject } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 import { validPassword } from "src/utility/validator";
 import { apiUpdatePassword } from "src/apis";
@@ -67,6 +67,7 @@ import notifyApiError from "src/utility/notifyApiError";
 import notifyApiSuccess from "src/utility/notifyApiSuccess";
 
 const authStore = useAuthStore();
+const defaultAvatar = inject("defaultAvatar");
 
 const myForm = ref(null);
 const form = reactive({
