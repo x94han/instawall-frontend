@@ -25,11 +25,11 @@
         </q-tabs>
 
         <div class="relative-position">
-          <ul class="row q-col-gutter-sm">
+          <ul class="list-unstyled row q-col-gutter-lg">
             <li
               v-for="post in feedStore.posts"
               :key="post._id"
-              class="list-unstyled col-4 cursor-pointer"
+              class="col-4 cursor-pointer"
             >
               <PostBrick :post="post" @show-post="openPostDialog" />
             </li>
