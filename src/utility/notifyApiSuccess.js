@@ -5,6 +5,5 @@ export default (message) => {
     type: "positive",
     position: "top",
     message: message,
-    icon: "report_problem",
   });
 };

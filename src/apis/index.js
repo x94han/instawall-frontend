@@ -29,7 +29,12 @@ export const apiUnfollowUser = (id) => api.delete(`${USER_URL}/${id}/follow`);
 const POST_URL = "posts";
 
 export const apiGetPosts = (params) => api.get(`${POST_URL}`, { params });
+
+export const apiAddPost = (data) => api.post(`${POST_URL}`, data);
 export const apiGetPost = (id) => api.get(`${POST_URL}/${id}`);
+export const apiUpdatePost = (id, data) => api.patch(`${POST_URL}/${id}`, data);
+export const apiDeletePost = (id, data) =>
+  api.delete(`${POST_URL}/${id}`, data);
 
 export const apiAddComment = (id, data) =>
   api.post(`${POST_URL}/${id}/comment`, data);

@@ -54,7 +54,7 @@
                   <span class="text-bold q-mr-sm">{{
                     props.post.user.screenName
                   }}</span>
-                  <span class="overflow-wrap-break">{{
+                  <span class="overflow-wrap-break white-space-line">{{
                     props.post.content
                   }}</span>
                 </p>

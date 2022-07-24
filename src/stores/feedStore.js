@@ -8,6 +8,14 @@ export const useFeedStore = defineStore("feed", {
   getters: {},
   actions: {
     /**
+     * 新增貼文
+     * @param {object} newPost 新的留言
+     */
+    addPost(newPost) {
+      this.posts.unshift(newPost);
+    },
+
+    /**
      * 新增貼文的留言
      * @param {object} newComment 新的留言資料
      */

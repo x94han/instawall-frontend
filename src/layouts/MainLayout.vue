@@ -5,10 +5,20 @@
         <q-toolbar-title class="text-grand-hotel text-bold">
           Instawall
         </q-toolbar-title>
+
         <div class="lg-screen-only">
-          <q-btn to="/" flat round icon="eva-home-outline" />
-          <q-btn to="/login" flat round icon="eva-search-outline" />
-          <q-btn to="/posts" flat round icon="eva-plus-square-outline" />
+          <q-btn
+            icon="eva-home-outline"
+            :to="{ name: 'HomePage' }"
+            flat
+            round
+          />
+          <q-btn
+            icon="eva-plus-square-outline"
+            @click="dialogHandler = true"
+            flat
+            round
+          />
           <q-btn flat round>
             <q-avatar size="sm">
               <img :src="authStore.user?.avatar || defaultAvatar" />
@@ -39,11 +49,17 @@
                   </div>
                   <q-item-section>按讚貼文</q-item-section>
                 </q-item>
-                <q-item clickable>
+                <q-item
+                  clickable
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: authStore.user?._id, tab: 'likes' },
+                  }"
+                >
                   <div class="flex items-center q-mr-md">
-                    <q-icon size="20px" name="eva-people" />
+                    <q-icon size="20px" name="eva-settings-outline" />
                   </div>
-                  <q-item-section>追蹤列表</q-item-section>
+                  <q-item-section>設定</q-item-section>
                 </q-item>
                 <q-separator></q-separator>
                 <q-item clickable>
@@ -85,9 +101,9 @@
                 </q-item>
                 <q-item clickable>
                   <div class="flex items-center q-mr-md">
-                    <q-icon size="20px" name="eva-people" />
+                    <q-icon size="20px" name="eva-settings-outline" />
                   </div>
-                  <q-item-section>追蹤列表</q-item-section>
+                  <q-item-section>設定</q-item-section>
                 </q-item>
                 <q-separator></q-separator>
                 <q-item clickable>
@@ -108,7 +124,10 @@
         class="text-grey-10"
       >
         <q-route-tab to="/" icon="eva-home-outline" />
-        <q-route-tab to="/posts" icon="eva-plus-square-outline" />
+        <q-route-tab
+          @click="dialogHandler = true"
+          icon="eva-plus-square-outline"
+        />
         <q-route-tab
           :to="{
             name: 'PersonalPage',
@@ -126,14 +145,22 @@
       <router-view />
     </q-page-container>
   </q-layout>
+
+  <CreatePostDialog v-model="dialogHandler" @add-post="feedStore.addPost" />
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, ref } from "vue";
 import { useAuthStore } from "src/stores/authStore";
+import { useFeedStore } from "src/stores/feedStore";
+
+import CreatePostDialog from "src/components/CreatePostDialog.vue";
 
 const authStore = useAuthStore();
+const feedStore = useFeedStore();
 const defaultAvatar = inject("defaultAvatar");
+
+const dialogHandler = ref(false);
 </script>
 
 <style lang="scss">
