@@ -4,7 +4,7 @@
       <div class="col">
         <ul
           v-if="loading"
-          class="list-unstyled q-mt-none q-ml-auto"
+          class="list-unstyled q-mt-none q-mx-auto q-mr-sm-none"
           style="max-width: 470px"
         >
           <li v-for="n in 5" :key="n" class="q-mb-md">
@@ -14,7 +14,7 @@
 
         <ul
           v-else
-          class="list-unstyled q-mt-none q-ml-auto"
+          class="list-unstyled q-mt-none q-mx-auto q-mr-sm-none"
           style="max-width: 470px"
         >
           <li v-if="feedStore.posts.length === 0" class="text-center">
