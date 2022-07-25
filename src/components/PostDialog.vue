@@ -16,12 +16,27 @@
           <q-card-section class="row items-center">
             <div class="col row">
               <div class="col-auto q-mr-md">
-                <q-avatar size="md">
-                  <img :src="props.post.user.avatar || defaultAvatar" />
-                </q-avatar>
+                <router-link
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: props.post.user._id },
+                  }"
+                >
+                  <q-avatar size="md">
+                    <img :src="props.post.user.avatar || defaultAvatar" />
+                  </q-avatar>
+                </router-link>
               </div>
               <div class="col self-center text-bold ellipsis">
-                {{ props.post.user.screenName }}
+                <router-link
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: props.post.user._id },
+                  }"
+                  class="q-mr-sm link-text text-bold"
+                >
+                  {{ props.post.user.screenName }}
+                </router-link>
               </div>
             </div>
             <q-btn
@@ -44,16 +59,29 @@
             <!-- post contert -->
             <div class="row q-gutter-md">
               <div class="col-auto">
-                <q-avatar size="md">
-                  <img :src="props.post.user.avatar || defaultAvatar" />
-                </q-avatar>
+                <router-link
+                  :to="{
+                    name: 'PersonalPage',
+                    params: { userId: props.post.user._id },
+                  }"
+                >
+                  <q-avatar size="md">
+                    <img :src="props.post.user.avatar || defaultAvatar" />
+                  </q-avatar>
+                </router-link>
               </div>
 
               <div class="col">
                 <p class="q-mb-none">
-                  <span class="text-bold q-mr-sm">{{
-                    props.post.user.screenName
-                  }}</span>
+                  <router-link
+                    :to="{
+                      name: 'PersonalPage',
+                      params: { userId: props.post.user._id },
+                    }"
+                    class="q-mr-sm link-text text-bold"
+                  >
+                    {{ props.post.user.screenName }}
+                  </router-link>
                   <span class="overflow-wrap-break white-space-line">{{
                     props.post.content
                   }}</span>
