@@ -1,26 +1,28 @@
 <template>
-  <div class="bg-grey-1 fullscreen q-pa-md scroll">
-    <div class="q-mx-auto" style="max-width: 350px">
+  <div
+    class="bg-grey-1 fullscreen q-pa-md scroll flex justify-center items-center"
+  >
+    <div style="width: 350px; max-width: 350px">
       <q-card flat bordered class="text-center q-mb-md">
         <q-card-section class="column">
           <h1 class="text-h3 text-grand-hotel q-my-lg">Instawall</h1>
           <!-- <h2 class="col text-h6 text-grey text-bold">
-          註冊即可查看朋友的照片和貼文。
-        </h2>
-        <q-btn
-          color="primary"
-          icon="eva-facebook-outline"
-          label="使用 Facebook 帳號登入"
-          class="text-bold"
-        /> -->
+            註冊即可查看朋友的照片和貼文。
+          </h2>
+          <q-btn
+            color="primary"
+            icon="eva-facebook-outline"
+            label="使用 Facebook 帳號登入"
+            class="text-bold"
+          /> -->
         </q-card-section>
 
         <!-- <q-card-section class="relative-position q-px-md">
-        <q-separator></q-separator>
-        <div class="absolute-center q-px-md bg-white text-grey text-bold">
-          或
-        </div>
-      </q-card-section> -->
+          <q-separator></q-separator>
+          <div class="absolute-center q-px-md bg-white text-grey text-bold">
+            或
+          </div>
+        </q-card-section> -->
 
         <q-card-section>
           <q-form @submit="onSubmit" class="column q-gutter-sm">

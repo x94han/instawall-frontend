@@ -1,6 +1,8 @@
 <template>
-  <div class="bg-grey-1 fullscreen q-pa-md scroll">
-    <div class="q-mx-auto" style="max-width: 350px">
+  <div
+    class="bg-grey-1 fullscreen q-pa-md scroll flex justify-center items-center"
+  >
+    <div style="width: 350px; max-width: 350px">
       <template v-if="!authStore.validToken">
         <q-card flat bordered class="text-center q-mb-md">
           <q-card-section>
