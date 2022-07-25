@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { Cookies } from "quasar";
-import { api } from "boot/axios";
-import { apiLogin } from "src/apis";
+import { apiLogin, apiSignup } from "src/apis";
 
 const cookieOptions = {
   expires: "1d",
