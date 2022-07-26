@@ -80,7 +80,7 @@ import notifyApiError from "src/utility/notifyApiError";
 
 import ProfileSection from "src/pages/PersonalPage/ProfileSection.vue";
 import PostBrick from "src/components/Post/PostBrick.vue";
-import PostDialog from "src/components/Pos/PostDialog.vue";
+import PostDialog from "src/components/Post/PostDialog.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();
