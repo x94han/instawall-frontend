@@ -2,8 +2,13 @@
   <q-layout view="lHh Lpr lFf">
     <q-header bordered class="bg-white text-grey-10">
       <q-toolbar class="constrain">
-        <q-toolbar-title class="text-grand-hotel text-bold">
-          Instawall
+        <q-toolbar-title>
+          <router-link
+            :to="{ name: 'HomePage' }"
+            class="link-text text-grand-hotel text-bold"
+          >
+            Instawall
+          </router-link>
         </q-toolbar-title>
 
         <div class="lg-screen-only">
