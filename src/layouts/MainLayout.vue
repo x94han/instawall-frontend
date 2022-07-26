@@ -146,15 +146,15 @@
     </q-page-container>
   </q-layout>
 
-  <CreatePostDialog v-model="dialogHandler" @add-post="feedStore.addPost" />
+  <PostEditorDialog v-model="dialogHandler" @add-post="feedStore.addPost" />
 </template>
 
 <script setup>
-import { inject, ref } from "vue";
+import { provide, inject, ref } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 
-import CreatePostDialog from "src/components/CreatePostDialog.vue";
+import PostEditorDialog from "src/components/post/PostEditorDialog.vue";
 
 const authStore = useAuthStore();
 const feedStore = useFeedStore();

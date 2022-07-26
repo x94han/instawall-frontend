@@ -3,7 +3,7 @@
     :modelValue="props.modelValue"
     @update:modelValue="$emit('update:modelValue', !props.modelValue)"
   >
-    <q-card flat bordered style="width: 850px; max-width: 80vw">
+    <q-card flat bordered style="width: 800px; max-width: 80vw">
       <q-card-section horizontal>
         <!-- post image -->
         <div class="gt-xs bg-dark col-5 flex">
@@ -93,7 +93,7 @@
                 class="col-auto"
               >
                 <q-btn
-                  @click="dialogHandler = true"
+                  @click="actionOptionsHandler = true"
                   flat
                   round
                   size="sm"
@@ -172,17 +172,29 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+
+  <PostActionOptions
+    v-model="actionOptionsHandler"
+    :post="props.post"
+    @delete="feedStore.removePost"
+  />
 </template>
 
 <script setup>
 import { ref, inject, computed } from "vue";
 import { date } from "quasar";
-import { apiAddComment, apiLikePost, apiUnlikePost } from "src/apis";
+import {
+  apiAddComment,
+  apiLikePost,
+  apiUnlikePost,
+  apiDeletePost,
+} from "src/apis";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 import notifyApiError from "src/utility/notifyApiError";
 
 import CommentItem from "./CommentItem.vue";
+import PostActionOptions from "src/components/Post/PostActionOptions.vue";
 
 const authStore = useAuthStore();
 const feedStore = useFeedStore();
@@ -212,7 +224,7 @@ const emits = defineEmits([
 ]);
 
 /**
- * Page Basics
+ * Init
  */
 const onCommentItemDelete = (commentId, postId) => {
   emits("deleteComment", commentId, postId);
@@ -260,6 +272,22 @@ const leaveComment = async () => {
     notifyApiError(error);
   } finally {
     loadingLeave.value = false;
+  }
+};
+
+/**
+ * PostActionOptions
+ */
+const actionOptionsHandler = ref(false);
+
+const deletePost = async () => {
+  try {
+    const res = await apiDeletePost(props.post._id);
+    isWantDelete.value = false;
+    actionOptionsHandler.value = false;
+  } catch (error) {
+    notifyApiError(error);
+  } finally {
   }
 };
 </script>

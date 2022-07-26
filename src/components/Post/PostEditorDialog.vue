@@ -12,7 +12,7 @@
       class="absolute-top-right"
     />
 
-    <q-card flat bordered style="width: 400px; height: 60vh">
+    <q-card flat bordered style="width: 100%; max-width: 500px">
       <!-- header -->
       <q-item class="row justify-between q-pa-sm">
         <q-btn
@@ -58,10 +58,14 @@
         v-model="panel"
         keep-alive
         animated
-        class="shadow-2 rounded-borders"
+        style="min-height: 400px; height: 70vh"
       >
-        <q-tab-panel name="image">
-          <div v-if="!hasImage" class="column justify-center items-center">
+        <!-- upload image -->
+        <q-tab-panel
+          name="image"
+          class="q-pa-none full-height column justify-center items-center"
+        >
+          <template v-if="!hasImage">
             <q-icon size="100px" name="eva-image-outline" class="q-mb-md" />
             <h3 class="text-h5 q-mt-none">將相片拖曳到這裡</h3>
             <q-btn
@@ -70,8 +74,14 @@
               :loading="loadingUpload"
               color="primary"
             />
-          </div>
-          <q-img v-else :src="image" />
+          </template>
+          <q-img
+            v-else
+            :src="image"
+            fit="contain"
+            height="100%"
+            class="bg-black"
+          />
           <input
             @change="uploadImage"
             ref="fileInput"
@@ -80,49 +90,68 @@
           />
         </q-tab-panel>
 
+        <!-- post content -->
         <q-tab-panel name="post">
-          <div>
-            <q-item class="q-pt-none q-px-none">
-              <q-item-section avatar class="col-auto">
-                <q-avatar size="md">
-                  <img :src="authStore.user.avatar ?? defaultAvatar" />
-                </q-avatar>
-              </q-item-section>
-
-              <q-item-section>
-                <q-item-label class="text-bold ellipsis">
-                  {{ authStore.user.screenName }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
+          <div class="row q-mb-sm">
+            <q-item-section avatar class="col-auto">
+              <q-avatar size="md">
+                <img :src="authStore.user.avatar ?? defaultAvatar" />
+              </q-avatar>
+            </q-item-section>
 
             <q-item-section>
-              <q-input
-                v-model.trim="content"
-                :rules="[(val) => val?.length > 0 || '貼文內容不得為空']"
-                maxlength="2200"
-                filled
-                borderless
-                counter
-                placeholder="撰寫說明文字..."
-                type="textarea"
-              />
+              <q-item-label class="text-bold ellipsis">
+                {{ authStore.user.screenName }}
+              </q-item-label>
             </q-item-section>
           </div>
+          <q-input
+            v-model.trim="content"
+            :rules="[(val) => val?.length > 0 || '貼文內容不得為空']"
+            maxlength="2200"
+            borderless
+            counter
+            autogrow
+            placeholder="撰寫說明文字..."
+            type="textarea"
+            class="q-pt-none"
+          />
         </q-tab-panel>
       </q-tab-panels>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="discardHandler">
+    <q-card class="text-center" style="width: 300px">
+      <q-card-section>
+        <h2 class="text-h5">捨棄貼文？</h2>
+        <h3 class="text-subtitle1">如果退出，系統將不會儲存你的編輯內容。</h3>
+      </q-card-section>
+      <q-list>
+        <q-item
+          @click="discardPost"
+          clickable
+          v-ripple
+          class="text-bold text-negative"
+        >
+          <q-item-section>捨棄</q-item-section>
+        </q-item>
+        <q-item clickable v-ripple v-close-popup>
+          <q-item-section>取消</q-item-section>
+        </q-item>
+      </q-list>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup>
-import { ref, inject, computed } from "vue";
-import { apiUploadImage, apiAddPost } from "src/apis";
+import { watch, ref, inject, computed } from "vue";
+import { apiUploadImage, apiAddPost, apiUpdatePost } from "src/apis";
 import { useAuthStore } from "src/stores/authStore";
 import notifyApiError from "src/utility/notifyApiError";
 import notifyApiSuccess from "src/utility/notifyApiSuccess";
 
-import CommentItem from "./CommentItem.vue";
+import CommentItem from "../CommentItem.vue";
 
 const authStore = useAuthStore();
 const defaultAvatar = inject("defaultAvatar");
@@ -136,20 +165,36 @@ const props = defineProps({
     required: true,
     default: false,
   },
+  post: {
+    type: Object,
+    required: false,
+  },
 });
 
-const emits = defineEmits(["update:modelValue", "addPost"]);
+const emits = defineEmits(["update:modelValue", "addPost", "updatePost"]);
+
+const hasPropPost = computed(() => props.post != undefined);
 
 /**
  * init
  */
+watch(
+  () => props.post,
+  (post, _) => {
+    if (hasPropPost.value) {
+      image.value = post.image;
+      content.value = post.content;
+    }
+  }
+);
+
 const panel = ref("image");
 const fileInput = ref("");
 
 const onClickArrowBack = () => {
   switch (panel.value) {
     case "image":
-      image.value = "";
+      discardHandler.value = true;
       break;
 
     case "post":
@@ -167,8 +212,7 @@ const resetDate = () => {
 /**
  * 上傳圖片
  */
-const image = ref("https://i.imgur.com/HO4DQzr.jpg");
-// const image = ref("");
+const image = ref("");
 const hasImage = computed(() => image.value.length > 0);
 const loadingUpload = ref(false);
 
@@ -197,20 +241,58 @@ const loadingShare = ref(false);
 const sharePost = async () => {
   loadingShare.value = true;
   try {
-    const res = await apiAddPost({
-      image: image.value,
-      content: content.value,
-    });
-    notifyApiSuccess("新增成功");
-    resetDate();
-    emits("addPost", res.data);
-    emits("update:modelValue", !props.modelValue);
+    if (hasPropPost.value) {
+      const res = await apiUpdatePost(props.post._id, {
+        image: image.value,
+        content: content.value,
+      });
+      notifyApiSuccess("更新成功");
+      emits("updatePost", res.data);
+    } else {
+      const res = await apiAddPost({
+        image: image.value,
+        content: content.value,
+      });
+      notifyApiSuccess("新增成功");
+      resetDate();
+      emits("addPost", res.data);
+    }
   } catch (error) {
     notifyApiError(error);
   } finally {
     loadingShare.value = false;
+    emits("update:modelValue", !props.modelValue);
   }
+};
+
+/**
+ * 捨棄目前貼文
+ */
+const discardHandler = ref(false);
+const discardPost = () => {
+  if (hasPropPost.value) {
+    discardHandler.value = false;
+    emits("update:modelValue", !props.modelValue);
+    return;
+  }
+
+  resetDate();
+  discardHandler.value = false;
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.q-pt-none.q-textarea {
+  height: calc(100% - 40px);
+
+  .q-field__inner,
+  .q-field__control {
+    height: 100%;
+  }
+
+  :deep(.q-field__native) {
+    height: 100%;
+    padding-top: 0px;
+  }
+}
+</style>

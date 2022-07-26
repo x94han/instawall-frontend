@@ -16,6 +16,27 @@ export const useFeedStore = defineStore("feed", {
     },
 
     /**
+     * 更新貼文
+     * @param {object} post 新的貼文資料
+     */
+    updatePost(newPost) {
+      const foundPost = this.posts.find((post) => post._id === newPost._id);
+      if (foundPost) {
+        foundPost.image = newPost.image;
+        foundPost.content = newPost.content;
+      }
+    },
+
+    /**
+     * 移除貼文
+     * @param {object} postId 移除的貼文
+     */
+    removePost(postId) {
+      const idx = this.posts.findIndex((post) => post._id === postId);
+      ~idx && this.posts.splice(idx, 1);
+    },
+
+    /**
      * 新增貼文的留言
      * @param {object} newComment 新的留言資料
      */

@@ -141,7 +141,7 @@ const renewPosts = async (val) => {
 };
 
 /**
- * CommentDialog
+ * PostDialog
  */
 const dialogHandler = ref(false);
 const dialogPost = ref({});
