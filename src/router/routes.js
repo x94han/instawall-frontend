@@ -17,7 +17,7 @@ const routes = [
       {
         path: "/",
         name: "HomePage",
-        component: () => import("pages/HomePage/HomePage.vue"),
+        component: () => import("src/pages/HomePage.vue"),
         meta: { auth: true },
       },
       {

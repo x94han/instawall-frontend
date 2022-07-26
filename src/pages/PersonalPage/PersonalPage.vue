@@ -79,8 +79,8 @@ import { validObjectId } from "src/utility/validator";
 import notifyApiError from "src/utility/notifyApiError";
 
 import ProfileSection from "src/pages/PersonalPage/ProfileSection.vue";
-import PostBrick from "src/pages/PersonalPage/PostBrick.vue";
-import PostDialog from "src/components/PostDialog.vue";
+import PostBrick from "src/components/Post/PostBrick.vue";
+import PostDialog from "src/components/Pos/PostDialog.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();

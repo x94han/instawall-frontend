@@ -154,7 +154,7 @@ import { provide, inject, ref } from "vue";
 import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 
-import PostEditorDialog from "src/components/post/PostEditorDialog.vue";
+import PostEditorDialog from "src/components/Post/PostEditorDialog.vue";
 
 const authStore = useAuthStore();
 const feedStore = useFeedStore();

@@ -151,7 +151,7 @@ import { useAuthStore } from "src/stores/authStore";
 import notifyApiError from "src/utility/notifyApiError";
 import notifyApiSuccess from "src/utility/notifyApiSuccess";
 
-import CommentItem from "../CommentItem.vue";
+import CommentItem from "src/components/CommentItem.vue";
 
 const authStore = useAuthStore();
 const defaultAvatar = inject("defaultAvatar");

@@ -8,7 +8,7 @@
           style="max-width: 470px"
         >
           <li v-for="n in 5" :key="n" class="q-mb-md">
-            <SkeletonCard />
+            <CardSkeleton />
           </li>
         </ul>
 
@@ -85,9 +85,9 @@ import { useFeedStore } from "src/stores/feedStore";
 import { apiGetPosts } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 
-import SkeletonCard from "src/components/SkeletonCard.vue";
-import PostDialog from "src/components/PostDialog.vue";
-import PostCard from "src/pages/HomePage/PostCard.vue";
+import CardSkeleton from "src/components/Skeleton/CardSkeleton.vue";
+import PostDialog from "src/components/Post/PostDialog.vue";
+import PostCard from "src/components/Post/PostCard.vue";
 
 const authStore = useAuthStore();
 const feedStore = useFeedStore();

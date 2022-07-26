@@ -108,7 +108,7 @@
 
       <q-card-section style="max-height: 50vh" class="scroll">
         <ul v-if="dialog.loading" class="list-unstyled">
-          <li v-for="n in 3" :key="n"><SkeletonAvatarName /></li>
+          <li v-for="n in 3" :key="n"><AvatarNameSkeleton /></li>
         </ul>
         <ul v-else class="list-unstyled q-ma-none" style="min-height: 200px">
           <li v-if="dialog.users.length == 0" class="text-center">
@@ -183,7 +183,7 @@ import {
 } from "src/apis";
 import notifyApiError from "src/utility/notifyApiError";
 
-import SkeletonAvatarName from "components/SkeletonAvatarName.vue";
+import AvatarNameSkeleton from "components/Skeleton/AvatarNameSkeleton.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();

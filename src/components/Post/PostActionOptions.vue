@@ -56,7 +56,7 @@ import { ref } from "vue";
 import { apiDeletePost } from "src/apis";
 import { useFeedStore } from "src/stores/feedStore";
 import notifyApiError from "src/utility/notifyApiError";
-import PostEditorDialog from "./PostEditorDialog.vue";
+import PostEditorDialog from "src/components/Post/PostEditorDialog.vue";
 
 const feedStore = useFeedStore();
 

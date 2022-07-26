@@ -193,7 +193,7 @@ import { useAuthStore } from "src/stores/authStore";
 import { useFeedStore } from "src/stores/feedStore";
 import notifyApiError from "src/utility/notifyApiError";
 
-import CommentItem from "./CommentItem.vue";
+import CommentItem from "src/components/CommentItem.vue";
 import PostActionOptions from "src/components/Post/PostActionOptions.vue";
 
 const authStore = useAuthStore();
