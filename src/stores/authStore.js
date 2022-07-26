@@ -53,6 +53,7 @@ export const useAuthStore = defineStore("auth", {
       this.$reset();
       Cookies.remove("iwAccessToken");
       Cookies.remove("iwUser");
+      this.router.push({ name: "LoginPage" });
     },
   },
 });

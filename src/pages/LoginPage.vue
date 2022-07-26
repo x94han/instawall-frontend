@@ -105,7 +105,7 @@
                 flat
                 color="primary"
                 label="切換帳號"
-                @click="switchAccounts"
+                @click="authStore.logout"
               />
             </q-card-section>
           </q-card-section>
@@ -184,14 +184,6 @@ const onForgetPassword = async (evt) => {
     notifyApiError(error);
   } finally {
   }
-};
-
-/**
- *  切換帳號
- *  authStore.validToken = true 卡片才會顯示
- */
-const switchAccounts = () => {
-  authStore.logout();
 };
 </script>
 

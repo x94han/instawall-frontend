@@ -25,7 +25,7 @@
         </q-tabs>
 
         <div class="relative-position">
-          <ul class="list-unstyled row q-col-gutter-lg">
+          <ul class="list-unstyled row q-col-gutter-md">
             <li
               v-for="post in feedStore.posts"
               :key="post._id"
@@ -94,7 +94,7 @@ const isLoginUserPage = computed(
 );
 provide("isLoginUserPage", isLoginUserPage);
 
-const tab = ref(route.params.tab || "posts");
+const tab = ref("posts");
 
 const initData = async () => {
   feedStore.loadingPosts = true;
@@ -114,6 +114,8 @@ const initData = async () => {
 initData();
 
 onBeforeRouteUpdate(async (to, from) => {
+  tab.value = to.params.tab || "posts";
+
   if (to.params.userId !== from.params.userId) {
     if (!validObjectId(to.params.userId)) return { name: "NotFoundPage" };
 
