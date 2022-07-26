@@ -99,23 +99,24 @@
               </q-avatar>
             </q-item-section>
 
-            <q-item-section>
+            <q-item-section class="col">
               <q-item-label class="text-bold ellipsis">
                 {{ authStore.user.screenName }}
               </q-item-label>
             </q-item-section>
           </div>
-          <q-input
-            v-model.trim="content"
-            :rules="[(val) => val?.length > 0 || '貼文內容不得為空']"
-            maxlength="2200"
-            borderless
-            counter
-            autogrow
-            placeholder="撰寫說明文字..."
-            type="textarea"
-            class="q-pt-none"
-          />
+          <div class="textarea__wrap">
+            <q-input
+              v-model.trim="content"
+              :rules="[(val) => val?.length > 0 || '貼文內容不得為空']"
+              maxlength="2200"
+              borderless
+              counter
+              autogrow
+              placeholder="撰寫說明文字..."
+              type="textarea"
+            />
+          </div>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -282,16 +283,11 @@ const discardPost = () => {
 </script>
 
 <style lang="scss" scoped>
-.q-pt-none.q-textarea {
-  height: calc(100% - 40px);
-
-  .q-field__inner,
-  .q-field__control {
-    height: 100%;
+.textarea__wrap .q-textarea {
+  :deep(.q-field__bottom) {
+    padding-bottom: 10px;
   }
-
   :deep(.q-field__native) {
-    height: 100%;
     padding-top: 0px;
   }
 }
