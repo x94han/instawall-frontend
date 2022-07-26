@@ -10,10 +10,10 @@
           @update:model-value="renewPosts"
           switch-indicator
           inline-label
-          class="text-grey"
           active-color="dark"
           indicator-color="dark"
           narrow-indicator
+          class="q-mb-md text-grey"
         >
           <q-tab name="posts" label="貼文" icon="eva-grid-outline" />
           <q-tab
